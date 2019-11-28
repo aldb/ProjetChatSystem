@@ -55,20 +55,20 @@
         <lifeline xmi:type="uml:Lifeline" xmi:id="_nx8DUAYzEeqtAPQalNjK7w" name="" represents="_nx9RcAYzEeqtAPQalNjK7w" coveredBy="_ZBqEwAfGEeqSxpQ-Qb1iuQ _Z_-HIAfGEeqSxpQ-Qb1iuQ _IkqfwAnoEeqDKeh8mv_dUg _4yEwwAnnEeqDKeh8mv_dUg _S3xHQAnoEeqDKeh8mv_dUg"/>
         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_0pEt0AYzEeqtAPQalNjK7w" name="Message6SendEvent" covered="_UIR8IAYzEeqtAPQalNjK7w" message="_0o8yAAYzEeqtAPQalNjK7w"/>
         <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_0pFU4AYzEeqtAPQalNjK7w" name="Message6ReceiveEvent" covered="_lqBUkAYzEeqtAPQalNjK7w" message="_0o8yAAYzEeqtAPQalNjK7w"/>
-        <fragment xmi:type="uml:CombinedFragment" xmi:id="_ZBqEwAfGEeqSxpQ-Qb1iuQ" name="CombinedFragment16" covered="_UIR8IAYzEeqtAPQalNjK7w _nx8DUAYzEeqtAPQalNjK7w _lqBUkAYzEeqtAPQalNjK7w" interactionOperator="alt">
-          <operand xmi:type="uml:InteractionOperand" xmi:id="_Z_-HIAfGEeqSxpQ-Qb1iuQ" name="InteractionOperand2" covered="_UIR8IAYzEeqtAPQalNjK7w _nx8DUAYzEeqtAPQalNjK7w _lqBUkAYzEeqtAPQalNjK7w">
+        <fragment xmi:type="uml:CombinedFragment" xmi:id="_ZBqEwAfGEeqSxpQ-Qb1iuQ" name="CombinedFragment16" covered="_lqBUkAYzEeqtAPQalNjK7w _nx8DUAYzEeqtAPQalNjK7w _UIR8IAYzEeqtAPQalNjK7w" interactionOperator="alt">
+          <operand xmi:type="uml:InteractionOperand" xmi:id="_Z_-HIAfGEeqSxpQ-Qb1iuQ" name="InteractionOperand2" covered="_lqBUkAYzEeqtAPQalNjK7w _nx8DUAYzEeqtAPQalNjK7w _UIR8IAYzEeqtAPQalNjK7w">
             <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_MuPPoAY3EeqtAPQalNjK7w" name="Message9ReceiveEvent" message="_MuOBgAY3EeqtAPQalNjK7w"/>
             <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_MuOokAY3EeqtAPQalNjK7w" name="Message9SendEvent" message="_MuOBgAY3EeqtAPQalNjK7w"/>
             <guard xmi:type="uml:InteractionConstraint" xmi:id="_Z_-HIQfGEeqSxpQ-Qb1iuQ" name="guard">
               <specification xmi:type="uml:LiteralString" xmi:id="_cWt8EAfGEeqSxpQ-Qb1iuQ" name="disponibility=true" value="disponibility=true"/>
             </guard>
           </operand>
-          <operand xmi:type="uml:InteractionOperand" xmi:id="_IkqfwAnoEeqDKeh8mv_dUg" name="InteractionOperand2" covered="_UIR8IAYzEeqtAPQalNjK7w _nx8DUAYzEeqtAPQalNjK7w _lqBUkAYzEeqtAPQalNjK7w">
+          <operand xmi:type="uml:InteractionOperand" xmi:id="_IkqfwAnoEeqDKeh8mv_dUg" name="InteractionOperand2" covered="_lqBUkAYzEeqtAPQalNjK7w _nx8DUAYzEeqtAPQalNjK7w _UIR8IAYzEeqtAPQalNjK7w">
             <guard xmi:type="uml:InteractionConstraint" xmi:id="_Ik0QwAnoEeqDKeh8mv_dUg" name="guard"/>
           </operand>
         </fragment>
-        <fragment xmi:type="uml:InteractionUse" xmi:id="_4yEwwAnnEeqDKeh8mv_dUg" name="Check dispnibility" covered="_nx8DUAYzEeqtAPQalNjK7w _lqBUkAYzEeqtAPQalNjK7w" refersTo="_DMdsAAnoEeqDKeh8mv_dUg"/>
-        <fragment xmi:type="uml:InteractionUse" xmi:id="_S3xHQAnoEeqDKeh8mv_dUg" name="InteractionUse12" covered="_UIR8IAYzEeqtAPQalNjK7w _nx8DUAYzEeqtAPQalNjK7w _lqBUkAYzEeqtAPQalNjK7w" refersTo="_YBh2YAnoEeqDKeh8mv_dUg"/>
+        <fragment xmi:type="uml:InteractionUse" xmi:id="_4yEwwAnnEeqDKeh8mv_dUg" name="Check dispnibility" covered="_lqBUkAYzEeqtAPQalNjK7w _nx8DUAYzEeqtAPQalNjK7w" refersTo="_DMdsAAnoEeqDKeh8mv_dUg"/>
+        <fragment xmi:type="uml:InteractionUse" xmi:id="_S3xHQAnoEeqDKeh8mv_dUg" name="InteractionUse12" covered="_lqBUkAYzEeqtAPQalNjK7w _nx8DUAYzEeqtAPQalNjK7w _UIR8IAYzEeqtAPQalNjK7w" refersTo="_YBh2YAnoEeqDKeh8mv_dUg"/>
         <message xmi:type="uml:Message" xmi:id="_0o8yAAYzEeqtAPQalNjK7w" name="pushConnectionButton(username)" receiveEvent="_0pFU4AYzEeqtAPQalNjK7w" sendEvent="_0pEt0AYzEeqtAPQalNjK7w"/>
         <message xmi:type="uml:Message" xmi:id="_MuOBgAY3EeqtAPQalNjK7w" name="NotifiedConnection(username)" messageSort="asynchCall" receiveEvent="_MuPPoAY3EeqtAPQalNjK7w" sendEvent="_MuOokAY3EeqtAPQalNjK7w"/>
       </ownedBehavior>
@@ -393,6 +393,12 @@
     </ownedAttribute>
     <ownedAttribute xmi:type="uml:Property" xmi:id="_wzPEMAniEeqDKeh8mv_dUg" name="Active" visibility="private">
       <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_eAvYoBGwEeqJofyvZo_qQw" name="add_mac" visibility="private">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_mPp60BGwEeqJofyvZo_qQw" name="add_ip">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
     </ownedAttribute>
     <ownedOperation xmi:type="uml:Operation" xmi:id="_2LAhgAnfEeqDKeh8mv_dUg" name="ChangeUsername" visibility="public">
       <ownedParameter xmi:type="uml:Parameter" xmi:id="_Vka0YAngEeqDKeh8mv_dUg" name="new_Username">

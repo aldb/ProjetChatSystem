@@ -1688,6 +1688,14 @@
           <element href="Projet_COO.uml#_wzPEMAniEeqDKeh8mv_dUg"/>
           <layoutConstraint xsi:type="notation:Location" xmi:id="_wzYOIQniEeqDKeh8mv_dUg"/>
         </children>
+        <children xsi:type="notation:Shape" xmi:id="_eBoJcBGwEeqJofyvZo_qQw" type="Property_ClassAttributeLabel">
+          <element href="Projet_COO.uml#_eAvYoBGwEeqJofyvZo_qQw"/>
+          <layoutConstraint xsi:type="notation:Location" xmi:id="_eBoJcRGwEeqJofyvZo_qQw"/>
+        </children>
+        <children xsi:type="notation:Shape" xmi:id="_mP81wBGwEeqJofyvZo_qQw" type="Property_ClassAttributeLabel">
+          <element href="Projet_COO.uml#_mPp60BGwEeqJofyvZo_qQw"/>
+          <layoutConstraint xsi:type="notation:Location" xmi:id="_mP81wRGwEeqJofyvZo_qQw"/>
+        </children>
         <styles xsi:type="notation:TitleStyle" xmi:id="_RWvIdwnfEeqDKeh8mv_dUg"/>
         <styles xsi:type="notation:SortingStyle" xmi:id="_RWvIeAnfEeqDKeh8mv_dUg"/>
         <styles xsi:type="notation:FilteringStyle" xmi:id="_RWvIeQnfEeqDKeh8mv_dUg"/>
