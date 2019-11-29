@@ -5,7 +5,8 @@ public class Message
 	private String data;
 	private Date date;
 	
-	public Message(String data)
+	
+	public Message(String data )
 	{
 		this.data = data;
 		this.date = new Date();
