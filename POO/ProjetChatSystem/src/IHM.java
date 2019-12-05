@@ -2,15 +2,18 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.UnknownHostException;
 
 import javax.swing.*;
 import javax.accessibility.*;
 
 public class IHM implements ActionListener {
 //List<Session> sessions  = new ArrayList<Session>();
-//List<User> users  = new ArrayList<User>();
+UserList userlist= new UserList();
 String currentUsername; //instancié lors de la connexion 
-//NotificationCenter notificationCenter= new NotificationCenter();
+NotificationCenter notificationCenter= new NotificationCenter(userlist);
 
 JFrame mainFrame;
 JPanel connexionPanel;
@@ -26,7 +29,7 @@ mainFrame.setSize(new Dimension(400, 400));
 //Create and set up the connexion pannel
 connexionPanel= new JPanel(new GridLayout(2, 2));
 //create widget
-login =new JTextField(10);
+login =new JTextField(15);
 connexionLabel= new JLabel("Enter login");
 connexion= new JButton("Connexion");
 connexion.addActionListener(this);
@@ -43,17 +46,78 @@ mainFrame.pack();
 mainFrame.setVisible(true);
 }	
 
-public void connection() 
-{
+public void connection(String username) 
+{	String ip;
+	StringBuffer s = new StringBuffer();
+	
+	//check_disponilily
+	notificationCenter.check_disponibility(username);
+	boolean ok= true;
+	//attendre une reponse X fois 
+	for (int i ; i<100; i++)
+		{	try {notificationCenter.wait_response();}
+			catch ( usernameException e) {
+				ok=false; 
+				break; 
+			}
+			i++; 
+		}
+	
+	//aucune exception n'a été levé on peut se connecter
+	if (ok) 
+	{
+		//changer l'interface graphique
+		
+		
+		
+		
+		
+		
+		
+		//notify + update the list
+		try
+        {
+			ip = InetAddress.getLocalHost().toString();
+			InetAddress address = InetAddress.getLocalHost();
+			NetworkInterface ni =  NetworkInterface.getByInetAddress(address);
+            if (ni != null) 
+            {
+                byte[] macbyte = ni.getHardwareAddress();
+             
+                for (int i = 0; i < macbyte.length; i++) {
+                	s.append(String.format("%02X%s", macbyte[i]));
+                }
+            } 
+                
+        }
+        catch (UnknownHostException e) {  } 
+		
+		//on s'ajoute a la list des utilisateurs
+		User us= new User(username,s.toString(),ip);
+		userlist.add(us);
+		//on notifie la connexion les reponses nous servirons à construire la liste
+		notificationCenter.notify_connexion(username,s.toString(),ip); 
+		
+	}
+	
 }
-public void deconnection() {}
-public void changeUsername() {}
-public void openSession() {}
+	
+
+public void deconnection() {
+	
+}
+public void changeUsername() {
+	
+}
+public void openSession() {
+	
+}
 
 public void actionPerformed(ActionEvent event) {
 	if (event.getActionCommand().equals("Connexion"))
-	{
-		connection();
+	{	
+		String log= login.getText();
+		connection(log);
 	}
 	else if (event.getActionCommand().equals("Deconnexion"))
 	{

@@ -6,11 +6,20 @@ public class User
 	private String macAddress;
 	private String ipAddress;
 	
-	public User()
+	public User(String username, String macAdd, String ipAdd)
 	{
+		this.username= username;
+		this.macAddress= macAdd;
+		this.ipAddress= ipAdd; 
 		
 	}
 	
+	public static boolean compareUsername (User u1,User u2) 
+	{
+		return u1.getUsername()==u2.getUsername();	
+	}
+	
+
 	public String getUsername()
 	{
 		return username;
