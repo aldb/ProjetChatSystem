@@ -19,18 +19,21 @@ static String currentMac; //instancié lors de la connexion
 NotificationCenter notificationCenter= new NotificationCenter(userlist);
 
 JFrame mainFrame;
-JPanel connexionPanel;
-JTextField login;
-JLabel connexionLabel, mainFrameLabel;
-JButton connexion, opensession, send;
 
+JPanel connexionPanel,mainPanel;
+JTextField login;
+JLabel connexionLabel, mainFrameLabel,mainPanelLabel;
+JButton connexion, opensession, send;
+JMenuBar menuBar; 
 IHM(){
 // Create and set up the main window
 mainFrame = new JFrame("Chat Application");
 mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-mainFrame.setSize(new Dimension(400, 400));
+mainFrame.setSize(new Dimension(4000, 4000));
+
 //Create and set up the connexion pannel
 connexionPanel= new JPanel(new GridLayout(2, 2));
+
 //create widget
 login =new JTextField(15);
 connexionLabel= new JLabel("Enter login");
