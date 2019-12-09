@@ -2,18 +2,23 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class TcpCommunication
 {
 	private Socket sock;
 	private static ServerSocket serverSock; // 
 	
-	public TcpCommunication() throws UnknownHostException, IOException
+	public TcpCommunication()
 	{
 		// Generer num port
 		int port = 5000;
-		serverSock = new ServerSocket(port, 1000);
+		try
+		{
+			serverSock = new ServerSocket(port, 1000);
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public Socket newConnection()

@@ -5,22 +5,32 @@ import java.net.InetAddress;
 import java.net.SocketException;
 
 public class UdpCommunication
-{	DatagramSocket dgramSocket;
+{	
+	DatagramSocket dgramSocket;
 	
-	UdpCommunication() throws SocketException{
+	UdpCommunication() {
 	//création du socket 
-	dgramSocket= new DatagramSocket(1234);
-	dgramSocket.setSoTimeout(100);
+		try
+		{
+			dgramSocket= new DatagramSocket(1234);
+			dgramSocket.setSoTimeout(100);
+		} catch (SocketException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
-	public Notification receiveDatagram() throws IOException {
+	public Notification receiveDatagram() {
 		byte[] buffer = new byte[256];
 		DatagramPacket inPacket = new DatagramPacket(buffer, buffer.length);
 		try {
-		this.dgramSocket.receive(inPacket);}
+			this.dgramSocket.receive(inPacket);}
 		catch (java.net.SocketTimeoutException e)
 		{
 			return new Notification();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
 		}
 		InetAddress clientAddress = inPacket.getAddress();
 		int clientPort = inPacket.getPort();
@@ -28,11 +38,14 @@ public class UdpCommunication
 		return new Notification(message, clientPort, clientAddress);
 	}
 	
-	public void sendDatagram(String message, int port, InetAddress host ) throws IOException {
+	public void sendDatagram(String message, int port, InetAddress host ) {
 		DatagramPacket outPacket= new DatagramPacket(message.getBytes(), message.length(), host , port);
-		this.dgramSocket.send(outPacket);
+		try
+		{
+			this.dgramSocket.send(outPacket);
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
-		
-	
-	
 }
