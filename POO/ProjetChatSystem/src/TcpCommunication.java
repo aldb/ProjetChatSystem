@@ -7,13 +7,31 @@ import java.net.UnknownHostException;
 public class TcpCommunication
 {
 	private Socket sock;
-	private static ServerSocket serverSock; // partagé //serverSock = new ServerSocket(5000, 1000, );
+	private static ServerSocket serverSock; // 
 	
-	public TcpCommunication(boolean type, String ipAddress) throws UnknownHostException, IOException
+	public TcpCommunication() throws UnknownHostException, IOException
 	{
 		// Generer num port
 		int port = 5000;
-		
+		serverSock = new ServerSocket(port, 1000);
+	}
+	
+	public Socket newConnection()
+	{
+		Socket sock =
+		null;
+		try
+		{	
+			// TCP
+			sock = serverSock.accept();
+			//SockThread sockThread = new SockThread(sock);
+			//sockThread.start();		
+			}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		return sock;
 	}
 	
 	public void send(String data)

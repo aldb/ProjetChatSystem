@@ -2,8 +2,10 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import javax.swing.*;
@@ -12,7 +14,7 @@ import javax.accessibility.*;
 public class IHM implements ActionListener {
 //List<Session> sessions  = new ArrayList<Session>();
 UserList userlist= new UserList();
-String currentUsername; //instancié lors de la connexion 
+static String currentUsername; //instancié lors de la connexion 
 NotificationCenter notificationCenter= new NotificationCenter(userlist);
 
 JFrame mainFrame;
@@ -46,15 +48,15 @@ mainFrame.pack();
 mainFrame.setVisible(true);
 }	
 
-public void connection(String username) 
-{	String ip;
+public void connection(String username) throws IOException 
+{	String ip = "";
 	StringBuffer s = new StringBuffer();
 	
 	//check_disponilily
 	notificationCenter.check_disponibility(username);
 	boolean ok= true;
 	//attendre une reponse X fois 
-	for (int i ; i<100; i++)
+	for (int i = 0; i<100; i++)
 		{	try {notificationCenter.wait_response();}
 			catch ( usernameException e) {
 				ok=false; 
@@ -90,7 +92,7 @@ public void connection(String username)
             } 
                 
         }
-        catch (UnknownHostException e) {  } 
+        catch (UnknownHostException | SocketException e) {  } 
 		
 		//on s'ajoute a la list des utilisateurs
 		User us= new User(username,s.toString(),ip);
@@ -148,5 +150,7 @@ public static void main(String[] args) {
     }); */
 }
 
+
+	
 
 }

@@ -14,14 +14,16 @@ public class Session
 		this.receiver = receiver;
 		this.sock = sock;
 		this.history = new ArrayList<Message>();
-		// retrieve history
+		retrieveHistory();
 	}
 	
 	public void closeSession() throws IOException
 	{
 		sock.close();
-		// save history?
+		saveHistory();
 	}
+	
+	
 	
 	public void saveHistory()
 	{
@@ -34,6 +36,7 @@ public class Session
 	}
 	
 
+	// Display on IHM
 	public ArrayList<Message> getHistory()
 	{
 		return history;

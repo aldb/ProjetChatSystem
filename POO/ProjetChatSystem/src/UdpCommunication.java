@@ -1,17 +1,19 @@
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 
 public class UdpCommunication
 {	DatagramSocket dgramSocket;
 	
-	UdpCommunication(){
+	UdpCommunication() throws SocketException{
 	//création du socket 
 	dgramSocket= new DatagramSocket(1234);
 	dgramSocket.setSoTimeout(100);
 	}
 	
-	public Notification receiveDatagram() {
+	public Notification receiveDatagram() throws IOException {
 		byte[] buffer = new byte[256];
 		DatagramPacket inPacket = new DatagramPacket(buffer, buffer.length);
 		try {
@@ -26,7 +28,7 @@ public class UdpCommunication
 		return new Notification(message, clientPort, clientAddress);
 	}
 	
-	public void sendDatagram(String message, int port, InetAddress host ) {
+	public void sendDatagram(String message, int port, InetAddress host ) throws IOException {
 		DatagramPacket outPacket= new DatagramPacket(message.getBytes(), message.length(), host , port);
 		this.dgramSocket.send(outPacket);
 	}

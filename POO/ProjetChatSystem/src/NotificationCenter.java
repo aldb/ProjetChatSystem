@@ -1,6 +1,6 @@
-package src;
-
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 public class NotificationCenter {
@@ -9,7 +9,7 @@ UdpCommunication udpcom;
 UserList userList; 
 InetAddress broadcast; 
 
-NotificationCenter(UserList l){
+NotificationCenter(UserList l) throws SocketException{
 	udpcom= new  UdpCommunication();
 	this.userList=l; 
 	//creation addresse de broadcast pour l'instant nous même
@@ -18,27 +18,27 @@ NotificationCenter(UserList l){
 }
 
 // Code des notifications i,c,d,a, r reponse 
-public void check_disponibility(String username) 
+public void check_disponibility(String username) throws IOException 
 {
 	udpcom.sendDatagram(("i "+username), 1234 ,this.broadcast );
 }
 
-public void notify_connexion(String username,String macAddress, String ipAddress) 
+public void notify_connexion(String username,String macAddress, String ipAddress) throws IOException 
 {
 	udpcom.sendDatagram("c "+username+" "+macAddress+" "+ipAddress, 1234 ,this.broadcast);
 }
 
-public void notify_deconnexion(String username,String macAddress, String ipAddress) 
+public void notify_deconnexion(String username,String macAddress, String ipAddress) throws IOException 
 {
 	udpcom.sendDatagram("d "+username+" "+macAddress+" "+ipAddress, 1234 ,this.broadcast);
 }
 
-public void notify_change_username(String username,String newusername,String macAddress, String ipAddress) 
+public void notify_change_username(String username,String newusername,String macAddress, String ipAddress) throws IOException 
 {
 	udpcom.sendDatagram("a "+username+" "+macAddress+" "+ipAddress+" "+newusername, 1234 ,this.broadcast);
 }
 
-public void wait_response () throws usernameException 
+public void wait_response () throws usernameException, IOException 
 {	
 	Notification notification= udpcom.receiveDatagram();
 	//recevoir une réponse à check disponibility 
@@ -51,7 +51,7 @@ public void wait_response () throws usernameException
 }
 
 //lA FONCTION SUIVANTE DOIT ETRE APPELER DANS UNE BOUCLE WHILE APRES LA CONNEXION 
-public void handle_notification()
+public void handle_notification() throws IOException
 {
 	Notification notification= udpcom.receiveDatagram();
 	//check disponibility
