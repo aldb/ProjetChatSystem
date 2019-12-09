@@ -7,6 +7,7 @@ public class NotificationCenter {
 String history;
 UdpCommunication udpcom; 
 UserList userList; 
+
 InetAddress broadcast; 
 
 NotificationCenter(UserList l){
@@ -79,6 +80,7 @@ public void handle_notification()
 		userList.add(user); 
 		
 		//on notify notre connexion à cette personne
+		udpcom.sendDatagram("c "+IHM.currentUsername+" "+IHM.currentMac+" "+IHM.currentIp, 1234 ,notification.add);
 		
 		
 		
@@ -90,6 +92,7 @@ public void handle_notification()
 		//enlever user à la list 
 		userList.remove(user); 
 	}
+	
 	//notify change username
 	if (notification.data.charAt(0)=='a') {
 		String[] data = notification.data.split(" ");

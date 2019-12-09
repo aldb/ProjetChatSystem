@@ -12,7 +12,10 @@ import javax.accessibility.*;
 public class IHM implements ActionListener {
 //List<Session> sessions  = new ArrayList<Session>();
 UserList userlist= new UserList();
-String currentUsername; //instancié lors de la connexion 
+static String currentUsername; //instancié lors de la connexion 
+static String currentIp; //instancié lors de la connexion 
+static String currentMac; //instancié lors de la connexion 
+
 NotificationCenter notificationCenter= new NotificationCenter(userlist);
 
 JFrame mainFrame;
@@ -47,7 +50,7 @@ mainFrame.setVisible(true);
 }	
 
 public void connection(String username) 
-{	String ip;
+{	
 	StringBuffer s = new StringBuffer();
 	
 	//check_disponilily
@@ -65,19 +68,12 @@ public void connection(String username)
 	
 	//aucune exception n'a été levé on peut se connecter
 	if (ok) 
-	{
-		//changer l'interface graphique
-		
-		
-		
-		
-		
-		
-		
+	{	
+		currentUsername=username; 
 		//notify + update the list
 		try
         {
-			ip = InetAddress.getLocalHost().toString();
+			currentIp = InetAddress.getLocalHost().toString();
 			InetAddress address = InetAddress.getLocalHost();
 			NetworkInterface ni =  NetworkInterface.getByInetAddress(address);
             if (ni != null) 
@@ -91,25 +87,35 @@ public void connection(String username)
                 
         }
         catch (UnknownHostException e) {  } 
-		
+		currentMac= s.toString();
 		//on s'ajoute a la list des utilisateurs
-		User us= new User(username,s.toString(),ip);
+		User us= new User(currentUsername,currentMac,"127.0.0.1");
 		userlist.add(us);
-		//on notifie la connexion les reponses nous servirons à construire la liste
-		notificationCenter.notify_connexion(username,s.toString(),ip); 
+		//on notifie la connexion les reponses nous servirons à construire notre liste des utilisateur actif 
+		notificationCenter.notify_connexion(currentUsername,currentMac,currentIp);
+		
+		//changer l'interface graphique afficher la liste des utilisteur actif la rafraichir automatiquement 
+		
 		
 	}
-	
 }
 	
 
 public void deconnection() {
+	//notify disconnection
+	notificationCenter.notify_deconnexion(currentUsername,currentMac,currentIp);
+	//close open session
+	
+	//return to connection page
 	
 }
 public void changeUsername() {
+	//notify the name change
 	
+	//change it in our list 
 }
 public void openSession() {
+	
 	
 }
 
