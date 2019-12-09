@@ -3,20 +3,20 @@ import java.util.ArrayList;
 @SuppressWarnings("serial")
 public class UserList extends ArrayList<User>
 {
-	UserList(){};
+	public UserList() {};
 	
-	public boolean usernameExist(User user) {
+	public boolean usernameExist(User user)
+	{
 		int i = 0;
 		boolean exist= false;
-		while (i < this.size() && !exist  ) {
+		while (i < this.size() && !exist) {
 			exist= User.compareUsername(this.get(i), user);
 			i++;
 		}
-		
 		return exist; 	
 	}
 	
-	public void changeUsername(User user, String newusername) 
+	public void changeUsername(User user, String newusername)  // ??????????
 	{
 		int i = 0;
 		if (this.contains(user)) 

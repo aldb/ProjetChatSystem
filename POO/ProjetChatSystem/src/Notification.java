@@ -1,8 +1,8 @@
 import java.net.InetAddress;
 import java.util.Date;
 
-public class Notification {
-	
+public class Notification
+{
 	String data;
 	int port ;
 	InetAddress add;
@@ -10,12 +10,16 @@ public class Notification {
 	
 	
 	public Notification(String data, int port, InetAddress add )
-	{	this.port= port;
+	{	
+		this.port= port;
 		this.add=  add; 
 		this.data = data;
 		this.date = new Date();
 	}
-	public Notification() {
+	
+	
+	public Notification()
+	{
 		this.data = "";
 	} 
 }

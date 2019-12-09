@@ -8,8 +8,9 @@ public class UdpCommunication
 {	
 	DatagramSocket dgramSocket;
 	
-	UdpCommunication() {
-	//crÃ©ation du socket 
+	public UdpCommunication()
+	{
+		//création du socket 
 		try
 		{
 			dgramSocket= new DatagramSocket(1234);
@@ -20,7 +21,8 @@ public class UdpCommunication
 		}
 	}
 	
-	public Notification receiveDatagram() {
+	public Notification receiveDatagram()
+	{
 		byte[] buffer = new byte[256];
 		DatagramPacket inPacket = new DatagramPacket(buffer, buffer.length);
 		try {
@@ -38,7 +40,8 @@ public class UdpCommunication
 		return new Notification(message, clientPort, clientAddress);
 	}
 	
-	public void sendDatagram(String message, int port, InetAddress host ) {
+	public void sendDatagram(String message, int port, InetAddress host )
+	{
 		DatagramPacket outPacket= new DatagramPacket(message.getBytes(), message.length(), host , port);
 		try
 		{

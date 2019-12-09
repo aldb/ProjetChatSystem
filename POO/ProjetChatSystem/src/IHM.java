@@ -5,18 +5,20 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
 public class IHM implements ActionListener
 {
-	//List<Session> sessions  = new ArrayList<Session>();
-	UserList userlist= new UserList();
-	static String currentUsername; //instanciÃ© lors de la connexion 
-	static String currentIp; //instanciÃ© lors de la connexion 
-	static String currentMac; //instanciÃ© lors de la connexion 
+	ArrayList<Session> sessions  = new ArrayList<Session>();
+	UserList userList = new UserList();
+	NotificationCenter notificationCenter= new NotificationCenter(userList);
 	
-	NotificationCenter notificationCenter= new NotificationCenter(userlist);
+	static String currentUsername; //instancié lors de la connexion 
+	static String currentIp; //instancié lors de la connexion 
+	static String currentMac; //instancié lors de la connexion 
+	
 	JFrame mainFrame;
 	JPanel connexionPanel,mainPanel;
 	JTextField login;
@@ -40,7 +42,7 @@ public class IHM implements ActionListener
 		connexionLabel= new JLabel("Enter login");
 		connexion= new JButton("Connexion");
 		connexion.addActionListener(this);
-		login.addActionListener(this);// utilitÃ© Ã  revoir
+		login.addActionListener(this);// utilité a  revoir
 		//add widget
 		connexionPanel.add(connexionLabel);
 		connexionPanel.add(login);
@@ -63,15 +65,17 @@ public class IHM implements ActionListener
 		boolean ok= true;
 		//attendre une reponse X fois 
 		for (int i = 0; i<100; i++)
-			{	try {notificationCenter.wait_response();}
-				catch ( UsernameException e) {
-					ok=false; 
-					break; 
-				}
-				i++; 
+		{
+			try { notificationCenter.wait_response(); }
+			catch ( UsernameException e)
+			{
+				ok=false; 
+				break; 
 			}
+			i++; 
+		}
 		
-		//aucune exception n'a Ã©tÃ© levÃ© on peut se connecter
+		//aucune exception n'a été levée on peut se connecter
 		if (ok) 
 		{	
 			currentUsername=username; 
@@ -85,7 +89,8 @@ public class IHM implements ActionListener
 	            {
 	                byte[] macbyte = ni.getHardwareAddress();
 	             
-	                for (int i = 0; i < macbyte.length; i++) {
+	                for (int i = 0; i < macbyte.length; i++)
+	                {
 	                	s.append(String.format("%02X%s", macbyte[i]));
 	                }
 	            } 
@@ -95,7 +100,7 @@ public class IHM implements ActionListener
 			currentMac= s.toString();
 			//on s'ajoute a la list des utilisateurs
 			User us= new User(currentUsername,currentMac,"127.0.0.1");
-			userlist.add(us);
+			userList.add(us);
 			//on notifie la connexion les reponses nous servirons Ã  construire notre liste des utilisateur actif 
 			notificationCenter.notify_connexion(currentUsername,currentMac,currentIp);
 			
@@ -105,7 +110,8 @@ public class IHM implements ActionListener
 	}
 		
 	
-	public void deconnection() {
+	public void deconnection()
+	{
 		//notify disconnection
 		notificationCenter.notify_deconnexion(currentUsername,currentMac,currentIp);
 		//close open session
@@ -115,20 +121,23 @@ public class IHM implements ActionListener
 	}
 	
 	
-	public void changeUsername() {
+	public void changeUsername()
+	{
 		//notify the name change
 		
 		//change it in our list 
 	}
 	
 	
-	public void openSession() {
+	public void openSession()
+	{
 		
 		
 	}
 	
 	
-	public void actionPerformed(ActionEvent event) {
+	public void actionPerformed(ActionEvent event)
+	{
 		if (event.getActionCommand().equals("Connexion"))
 		{	
 			String log= login.getText();
@@ -150,14 +159,16 @@ public class IHM implements ActionListener
 	}
 	
 	
-	private static void createAndShowGUI() {
+	private static void createAndShowGUI()
+	{
 	    //Make sure we have nice window decorations.
 	    JFrame.setDefaultLookAndFeelDecorated(true);
 	    IHM chatApp = new IHM();
 	}
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args)
+	{
 	    //Schedule a job for the event-dispatching thread:
 	    //creating and showing this application's GUI.
 	    javax.swing.SwingUtilities.invokeLater(new Runnable() {

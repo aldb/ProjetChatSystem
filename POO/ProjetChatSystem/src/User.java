@@ -11,12 +11,11 @@ public class User
 		this.username= username;
 		this.macAddress= macAdd;
 		this.ipAddress= ipAdd; 
-		
 	}
 	
-	public static boolean compareUsername (User u1,User u2) 
+	public static boolean compareUsername (User u1, User u2) 
 	{
-		return u1.getUsername()==u2.getUsername();	
+		return u1.getUsername() == u2.getUsername();	
 	}
 	
 
