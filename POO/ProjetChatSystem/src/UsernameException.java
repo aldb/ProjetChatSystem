@@ -1,5 +1,4 @@
 
-
 @SuppressWarnings("serial")
 public class UsernameException extends Exception
 {
