@@ -10,7 +10,7 @@ public class UdpCommunication
 	
 	public UdpCommunication()
 	{
-		//création du socket 
+		//crï¿½ation du socket 
 		try
 		{
 			dgramSocket= new DatagramSocket(1234);
@@ -30,7 +30,9 @@ public class UdpCommunication
 		catch (java.net.SocketTimeoutException e)
 		{
 			return new Notification();
-		} catch (IOException e)
+		} 
+		
+		catch (IOException e)
 		{
 			e.printStackTrace();
 		}

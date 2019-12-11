@@ -18,6 +18,7 @@ public class User
 		return u1.getUsername() == u2.getUsername();	
 	}
 	
+	public String toString() { return this.username;}
 
 	public String getUsername()
 	{

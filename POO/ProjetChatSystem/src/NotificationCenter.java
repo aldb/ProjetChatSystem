@@ -41,67 +41,74 @@ public class NotificationCenter
 	public void wait_response () throws UsernameException
 	{	
 		Notification notification= udpcom.receiveDatagram();
-		//recevoir une reponse a check disponibility 
+		//recevoir une reponse a check disponibility
+		if(! notification.data.equals("")) 
+		{
 			if (notification.data.charAt(0)=='r') {
 				if (notification.data.charAt(4)=='f') {
 					throw new UsernameException();
 				}
 			}
-	}
 	
+		}
+	}
 	//lA FONCTION SUIVANTE DOIT ETRE APPELER DANS UNE BOUCLE WHILE APRES LA CONNEXION 
 	public void handle_notification()
 	{
 		Notification notification= udpcom.receiveDatagram();
-		//check disponibility
-		if (notification.data.charAt(0)=='i')
+		
+		if(! notification.data.equals("")) 
 		{
-			String[] data = notification.data.split(" ");
-			User user= new User(data[1],data[2],data[3]);
-			String message;
-			//regarde si un utilisateur utilisant le username apparait dans la liste
-			if (userList.usernameExist(user))
+			//check disponibility
+			if (notification.data.charAt(0)=='i')
 			{
-				message="r i f";
+				String[] data = notification.data.split(" ");
+				User user= new User(data[1],"default","default");
+				String message;
+				//regarde si un utilisateur utilisant le username apparait dans la liste
+				if (userList.usernameExist(user))
+				{
+					message="r i f";
+				}
+				else { message="r i t"; }
+				//on envoie notre reponse
+				udpcom.sendDatagram(message,notification.port ,notification.add);
 			}
-			else { message="r i t"; }
-			//on envoie notre reponse
-			udpcom.sendDatagram(message,notification.port ,notification.add);
-		}
+				
 			
-		
-		//notify connexion
-		if (notification.data.charAt(0)=='c')
-		{
-			String[] data = notification.data.split(" ");
-			User user= new User(data[1],data[2],data[3]);
-			//ajouter user a la list
-			userList.add(user); 
+			//notify connexion
+			if (notification.data.charAt(0)=='c')
+			{
+				String[] data = notification.data.split(" ");
+				User user= new User(data[1],data[2],data[3]);
+				//ajouter user a la list
+				userList.add(user); 
+				
+				//on notify notre connexion à cette personne
+				
+	
+			}
 			
-			//on notify notre connexion à cette personne
 			
-
-		}
-		
-		
-		//notify deconnexion
-		if (notification.data.charAt(0)=='d')
-		{
-			String[] data = notification.data.split(" ");
-			User user= new User(data[1],data[2],data[3]);
-			//enlever user à la list 
-			userList.remove(user); 
-		}
-		
-		
-		//notify change username
-		if (notification.data.charAt(0)=='a')
-		{
-			String[] data = notification.data.split(" ");
-			User user= new User(data[1],data[2],data[3]);
-			String newusername= data[4];
-			//modifier user de la liste avec newusername
-			userList.changeUsername(user,newusername);  	
+			//notify deconnexion
+			if (notification.data.charAt(0)=='d')
+			{
+				String[] data = notification.data.split(" ");
+				User user= new User(data[1],data[2],data[3]);
+				//enlever user à la list 
+				userList.remove(user); 
+			}
+			
+			
+			//notify change username
+			if (notification.data.charAt(0)=='a')
+			{
+				String[] data = notification.data.split(" ");
+				User user= new User(data[1],data[2],data[3]);
+				String newusername= data[4];
+				//modifier user de la liste avec newusername
+				userList.changeUsername(user,newusername);  	
+			}
 		}
 	}
 }
