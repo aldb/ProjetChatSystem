@@ -15,7 +15,7 @@ public class IHM implements ActionListener
 	ArrayList<Session> sessions  = new ArrayList<Session>();
 	static UserList userList = new UserList();
 	static NotificationCenter notificationCenter= new NotificationCenter(userList);
-	
+	static boolean nameconflict=false; 
 	static String currentUsername; //instanci� lors de la connexion 
 	static String currentIp; //instanci� lors de la connexion 
 	static String currentMac; //instanci� lors de la connexion 
@@ -26,7 +26,8 @@ public class IHM implements ActionListener
 	JLabel connexionLabel, mainFrameLabel,opensessionLabel,changeusernameLabel, disconnectionLabel;
 	JButton connexion, opensession, send, disconnection, changeusername;
 	JList<User> list;
-	
+	Vector<User> vector = new Vector<>(userList);
+	static DefaultListModel<User> model=new DefaultListModel<>();
 	
 	public IHM()
 	{
@@ -56,6 +57,8 @@ public class IHM implements ActionListener
 		mainFrame.setVisible(true);
 		
 		
+		
+		
 	}	
 	
 	
@@ -65,21 +68,15 @@ public class IHM implements ActionListener
 		
 		//check_disponilily
 		notificationCenter.check_disponibility(username);
-		boolean ok= true;
+		
 		//attendre une reponse X fois 
 		for (int i = 0; i<100; i++)
 		{
-			try { notificationCenter.wait_response(); }
-			catch ( UsernameException e)
-			{
-				ok=false; 
-				break; 
-			}
 			i++; 
 		}
 		
 		//aucune exception n'a �t� lev�e on peut se connecter
-		if (ok) 
+		if (! nameconflict) 
 		{	
 			currentUsername=username; 
 			//notify + update the list
@@ -111,7 +108,7 @@ public class IHM implements ActionListener
 			
 			
 			//create and set up the connected window
-			connectedFrame = new JFrame("Connected "+currentUsername);
+			connectedFrame = new JFrame("Connected ");
 			connectedFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			connectedFrame.setSize(new Dimension(4000, 4000));
 			
@@ -137,8 +134,7 @@ public class IHM implements ActionListener
 			opensession.addActionListener(this);
 			opensessionLabel=new JLabel("Click the \"Open session\" button"+ " once you have selected user.",JLabel.CENTER);
 			
-			Vector<User> vector = new Vector<>(userList);
-			DefaultListModel<User> model=new DefaultListModel<>();
+			
 			list = new JList<>( vector ); //data has type Object[]
 			list.setModel(model);
 			list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -147,8 +143,7 @@ public class IHM implements ActionListener
 			JScrollPane listScroller = new JScrollPane(list);
 			listScroller.setPreferredSize(new Dimension(250, 80));
 			
-			//test ajouter un element 
-			model.addElement(new User("test","ip", "mac"));
+			
 			
 			//add widget to the different panel
 			changeusernamePanel.add(New_Username,BorderLayout.CENTER);
@@ -171,6 +166,11 @@ public class IHM implements ActionListener
 			//Affiche la fenêtre  principale
 			connectedFrame.pack();
 			connectedFrame.setVisible(true);
+			
+		}
+		else 
+		{
+			nameconflict=false; 
 		}
 	}
 		
@@ -182,15 +182,37 @@ public class IHM implements ActionListener
 		//close open session
 		
 		//return to connection page
+		connectedFrame.setVisible(false);
+		mainFrame.setVisible(true);
 		
 	}
 	
 	
 	public void changeUsername(String newname)
-	{
-		//notify the name change
+	{	//check_disponilily
+		notificationCenter.check_disponibility(newname);
+		//attendre une reponse pendant X seconde  
+		for (int i = 0; i<100; i++)
+		{
+			i++; 
+		}
 		
+		//no exception rise change of name possible
+		if (!nameconflict) 
+		{	
+		
+		//notify the name change
+		notificationCenter.notify_change_username(currentUsername,newname,currentMac, currentIp);
 		//change it in our list 
+		User us= new User(currentUsername,currentMac,"127.0.0.1");
+		userList.changeUsername(us, newname);
+		currentUsername=newname; 
+		}
+		else 
+		{
+			nameconflict=false; 
+		}
+		
 	}
 	
 	
@@ -247,9 +269,16 @@ public class IHM implements ActionListener
 	    while(true) 
 	    {
 	    	//handle notification
-	    	notificationCenter.handle_notification();
+	    	try { notificationCenter.handle_notification(); }
+			catch ( UsernameException e)
+			{
+				nameconflict=true; 
+			}
+	    	
 	    	
 	    	//update display list 
+	    	
+	    	//test ajouter un element 
 	    }
 	}
 }

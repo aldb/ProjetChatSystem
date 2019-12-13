@@ -38,27 +38,21 @@ public class NotificationCenter
 		udpcom.sendDatagram("a "+username+" "+macAddress+" "+ipAddress+" "+newusername, 1234 ,this.broadcast);
 	}
 	
-	public void wait_response () throws UsernameException
-	{	
-		Notification notification= udpcom.receiveDatagram();
-		//recevoir une reponse a check disponibility
-		if(! notification.data.equals("")) 
-		{
-			if (notification.data.charAt(0)=='r') {
-				if (notification.data.charAt(4)=='f') {
-					throw new UsernameException();
-				}
-			}
 	
-		}
-	}
 	//lA FONCTION SUIVANTE DOIT ETRE APPELER DANS UNE BOUCLE WHILE APRES LA CONNEXION 
-	public void handle_notification()
+	public void handle_notification()  throws UsernameException
 	{
 		Notification notification= udpcom.receiveDatagram();
 		
 		if(! notification.data.equals("")) 
 		{
+			//reponse check disponibility
+			if (notification.data.charAt(0)=='r') {
+				if (notification.data.charAt(4)=='f') {
+					throw new UsernameException();
+				}
+			}
+			
 			//check disponibility
 			if (notification.data.charAt(0)=='i')
 			{
@@ -83,8 +77,9 @@ public class NotificationCenter
 				User user= new User(data[1],data[2],data[3]);
 				//ajouter user a la list
 				userList.add(user); 
-				
+				IHM.model.addElement(user);
 				//on notify notre connexion à cette personne
+				notify_connexion(IHM.currentUsername,IHM.currentMac, IHM.currentIp); 
 				
 	
 			}
@@ -97,6 +92,7 @@ public class NotificationCenter
 				User user= new User(data[1],data[2],data[3]);
 				//enlever user à la list 
 				userList.remove(user); 
+				IHM.model.removeElement(user);
 			}
 			
 			
@@ -107,7 +103,11 @@ public class NotificationCenter
 				User user= new User(data[1],data[2],data[3]);
 				String newusername= data[4];
 				//modifier user de la liste avec newusername
-				userList.changeUsername(user,newusername);  	
+				userList.changeUsername(user,newusername);  
+				//on retire l'ancien user de la liste 
+				IHM.model.removeElement(user);
+				// on ajoute le même avec un nom different 
+				IHM.model.addElement(new User(data[4],data[2],data[3]));
 			}
 		}
 	}
