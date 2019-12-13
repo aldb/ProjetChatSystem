@@ -13,7 +13,7 @@ public class UdpCommunication
 		//cr�ation du socket 
 		try
 		{
-			dgramSocket= new DatagramSocket(1234);
+			dgramSocket= new DatagramSocket(50000);
 			dgramSocket.setSoTimeout(100);
 		} catch (SocketException e)
 		{

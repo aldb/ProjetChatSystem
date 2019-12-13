@@ -7,6 +7,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
 
@@ -70,9 +71,11 @@ public class IHM implements ActionListener
 		notificationCenter.check_disponibility(username);
 		
 		//attendre une reponse X fois 
-		for (int i = 0; i<100; i++)
-		{
-			i++; 
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		
 		//aucune exception n'a �t� lev�e on peut se connecter
@@ -108,7 +111,7 @@ public class IHM implements ActionListener
 			
 			
 			//create and set up the connected window
-			connectedFrame = new JFrame("Connected ");
+			connectedFrame = new JFrame("Connected");
 			connectedFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			connectedFrame.setSize(new Dimension(4000, 4000));
 			
@@ -192,9 +195,11 @@ public class IHM implements ActionListener
 	{	//check_disponilily
 		notificationCenter.check_disponibility(newname);
 		//attendre une reponse pendant X seconde  
-		for (int i = 0; i<100; i++)
-		{
-			i++; 
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		
 		//no exception rise change of name possible
@@ -207,6 +212,7 @@ public class IHM implements ActionListener
 		User us= new User(currentUsername,currentMac,"127.0.0.1");
 		userList.changeUsername(us, newname);
 		currentUsername=newname; 
+		connectedFrame.setTitle(currentUsername);
 		}
 		else 
 		{
