@@ -2,7 +2,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("serial")
@@ -21,7 +24,7 @@ public class History extends ArrayList<Message>
 	{
 		String contents = "History File - Current User @MAC " + IHM.currentUser.getMacAddress() + " - Receiver @MAC " + this.receiver.getMacAddress() + "\r\n";
 		for (Message message : this)
-			contents += "[" + message.getSender().getMacAddress() + "]" + message.getData() + "\n";
+			contents += "[" + String.format("dd-MMM-yyyy HH:mm:ss", message.getDate()) + "][" + message.getSender().getMacAddress() + "]" + message.getData() + "\n";
         
 		String absoluteFilePath = this.saveDirectory + "history_" + IHM.currentUser.getMacAddress() + "_" + this.receiver.getMacAddress() + "_data.txt";
 		File file = new File(absoluteFilePath);
@@ -46,17 +49,18 @@ public class History extends ArrayList<Message>
 			contents.remove(0); // first information line
 			for (String line : contents)
 			{
-				String senderMAC = line.split("]")[0].replace("[", "");
+				Date date = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").parse(line.split("]")[0].replace("[", ""));
+				String senderMAC = line.split("]")[1].replace("[", "");
 				User sender;
 				if (IHM.currentUser.getMacAddress() == senderMAC)
 					sender = IHM.currentUser;
 				else if (receiver.getMacAddress() == senderMAC)
 					sender = receiver;
 				else sender = new User("System", "System", "System");
-				String data = line.split("]")[1];
-				this.add(new Message(data, sender));
+				String data = line.split("]")[2];
+				this.add(new Message(data, sender, date));
 			}
-		} catch (IOException e)
+		} catch (IOException | ParseException e)
 		{
 			e.printStackTrace(); // TODO Handle exception : no history found for this session...
 		}
@@ -69,7 +73,7 @@ public class History extends ArrayList<Message>
 		String messagesData = "";
 		for (Message message : this)
 		{
-			messagesData += " " + message.getSender().getUsername() + " : " + message.getData() + "\n";
+			messagesData += "[" + String.format("dd-MMM-yyyy HH:mm:ss", message.getDate()) + "] " + message.getSender().getUsername() + " : " + message.getData() + "\n";
 		}
 		return messagesData;
 	}
