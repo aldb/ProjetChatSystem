@@ -4,21 +4,28 @@ public class Message
 {
 	private String data;
 	private Date date;
+	private User sender;
 	
 	
-	public Message(String data )
+	public Message(String data, User sender)
 	{
 		this.data = data;
+		this.sender = sender;
 		this.date = new Date();
 	}
 
 	public String getData()
 	{
-		return data;
+		return this.data;
 	}
 
 	public Date getDate()
 	{
-		return date;
+		return this.date;
+	}
+	
+	public User getSender()
+	{
+		return this.sender;
 	}
 }

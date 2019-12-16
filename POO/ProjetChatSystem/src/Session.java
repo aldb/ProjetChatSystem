@@ -1,10 +1,10 @@
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 
 public class Session
 {
-	private ArrayList<Message> history;
+	private History history;
 	private User receiver;
 	private Socket sock;
 	
@@ -13,37 +13,51 @@ public class Session
 	{
 		this.receiver = receiver;
 		this.sock = sock;
-		this.history = new ArrayList<Message>();
-		retrieveHistory();
+		this.history = new History();
+		
+		this.history.retrieveHistory();
+		this.enableReceivingMessages();
 	}
+	
+	
+	public void sendMessage(String data)
+	{
+		try
+		{
+			PrintWriter writer = new PrintWriter(sock.getOutputStream());
+			writer.write(data);
+			writer.flush();
+			writer.close();
+			//history.add(new Message(data, IHM.currentUser));
+		} catch (IOException e)
+		{
+			//history.add(new Message("Impossible d'envoyer le message : Connexion interrompu."), );
+			e.printStackTrace();
+		}
+	}
+	
+	private void enableReceivingMessages()
+	{
+		SocketReceiveThread sockReceiveThread = new SocketReceiveThread(this.sock, this.history);
+		sockReceiveThread.start();
+	}
+	
 	
 	public void closeSession() throws IOException
 	{
-		sock.close();
-		saveHistory();
-	}
-	
-	
-	
-	public void saveHistory()
-	{
-		// in a txt file
-	}
-	
-	public void retrieveHistory()
-	{
-		// from a txt file
+		this.sock.close();
+		this.history.saveHistory();
 	}
 	
 
 	// Display on IHM
-	public ArrayList<Message> getHistory()
+	public History getHistory()
 	{
-		return history;
+		return this.history;
 	}
 
 	public User getReceiver()
 	{
-		return receiver;
+		return this.receiver;
 	}
 }

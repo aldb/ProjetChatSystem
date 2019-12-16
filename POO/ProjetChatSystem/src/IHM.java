@@ -159,9 +159,31 @@ public class IHM implements ActionListener
 	}
 	
 	
+	private static void initLookAndFeel()
+	{
+	    String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
+	    
+	    try {
+	        UIManager.setLookAndFeel(lookAndFeel);
+	    } catch (ClassNotFoundException e) {
+	        System.err.println("Couldn't find class for specified look and feel:" + lookAndFeel);
+	        System.err.println("Did you include the L&F library in the class path?");
+	        System.err.println("Using the default look and feel.");
+	    } catch (UnsupportedLookAndFeelException e) {
+	        System.err.println("Can't use the specified look and feel (" + lookAndFeel + ") on this platform.");
+	        System.err.println("Using the default look and feel.");
+	    } catch (Exception e) {
+	        System.err.println("Couldn't get specified look and feel (" + lookAndFeel + "), for some reason.");
+	        System.err.println("Using the default look and feel.");
+	        e.printStackTrace();
+	    }
+    }
+	
+	
 	private static void createAndShowGUI()
 	{
 	    //Make sure we have nice window decorations.
+		initLookAndFeel();
 	    JFrame.setDefaultLookAndFeelDecorated(true);
 	    IHM chatApp = new IHM();
 	}
