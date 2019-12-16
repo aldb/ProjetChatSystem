@@ -15,9 +15,10 @@ public class User
 	
 	public static boolean compareUsername (User u1, User u2) 
 	{
-		return u1.getUsername() == u2.getUsername();	
+		return u1.getUsername().equals(u2.getUsername());	
 	}
 	
+	public String toString() { return this.username;}
 
 	public String getUsername()
 	{

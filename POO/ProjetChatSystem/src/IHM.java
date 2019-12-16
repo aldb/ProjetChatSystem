@@ -6,26 +6,29 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
 
 public class IHM implements ActionListener
 {
 	ArrayList<Session> sessions  = new ArrayList<Session>();
-	UserList userList = new UserList();
-	NotificationCenter notificationCenter= new NotificationCenter(userList);
+	static UserList userList = new UserList();
+	static NotificationCenter notificationCenter= new NotificationCenter(userList);
+	static boolean nameconflict=false; 
+	static String currentUsername; //instanciï¿½ lors de la connexion 
+	static String currentIp; //instanciï¿½ lors de la connexion 
+	static String currentMac; //instanciï¿½ lors de la connexion 
 	
-	static String currentUsername; //instancié lors de la connexion 
-	static String currentIp; //instancié lors de la connexion 
-	static String currentMac; //instancié lors de la connexion 
-	
-	JFrame mainFrame;
-	JPanel connexionPanel,mainPanel;
-	JTextField login;
-	JLabel connexionLabel, mainFrameLabel,mainPanelLabel;
-	JButton connexion, opensession, send;
-	JMenuBar menuBar;
-	
+	JFrame mainFrame, connectedFrame;
+	JPanel connexionPanel,opensessionPanel, deconnectionPanel,changeusernamePanel, mainPanel;
+	JTextField login, New_Username;
+	JLabel connexionLabel, mainFrameLabel,opensessionLabel,changeusernameLabel, disconnectionLabel;
+	JButton connexion, opensession, send, disconnection, changeusername;
+	JList<User> list;
+	Vector<User> vector = new Vector<>(userList);
+	static DefaultListModel<User> model=new DefaultListModel<>();
 	
 	public IHM()
 	{
@@ -42,7 +45,7 @@ public class IHM implements ActionListener
 		connexionLabel= new JLabel("Enter login");
 		connexion= new JButton("Connexion");
 		connexion.addActionListener(this);
-		login.addActionListener(this);// utilité a  revoir
+		login.addActionListener(this);// utilitï¿½ aï¿½ revoir
 		//add widget
 		connexionPanel.add(connexionLabel);
 		connexionPanel.add(login);
@@ -53,6 +56,10 @@ public class IHM implements ActionListener
 		//Display the window.
 		mainFrame.pack();
 		mainFrame.setVisible(true);
+		
+		
+		
+		
 	}	
 	
 	
@@ -62,21 +69,17 @@ public class IHM implements ActionListener
 		
 		//check_disponilily
 		notificationCenter.check_disponibility(username);
-		boolean ok= true;
+		
 		//attendre une reponse X fois 
-		for (int i = 0; i<100; i++)
-		{
-			try { notificationCenter.wait_response(); }
-			catch ( UsernameException e)
-			{
-				ok=false; 
-				break; 
-			}
-			i++; 
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		
-		//aucune exception n'a été levée on peut se connecter
-		if (ok) 
+		//aucune exception n'a ï¿½tï¿½ levï¿½e on peut se connecter
+		if (! nameconflict) 
 		{	
 			currentUsername=username; 
 			//notify + update the list
@@ -106,6 +109,71 @@ public class IHM implements ActionListener
 			
 			//changer l'interface graphique afficher la liste des utilisteur actif la rafraichir automatiquement 
 			
+			
+			//create and set up the connected window
+			connectedFrame = new JFrame("Connected");
+			connectedFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			connectedFrame.setSize(new Dimension(4000, 4000));
+			
+			//create and set up the different panel 
+			opensessionPanel= new JPanel(new GridLayout(3, 1));
+			deconnectionPanel= new JPanel(new GridLayout(1, 2));
+			changeusernamePanel= new JPanel(new GridLayout(1, 2));
+			mainPanel=new JPanel(new GridLayout(4, 1));
+			//create widget
+			
+			//for change username
+			New_Username =new JTextField(15);
+			changeusername= new JButton("Change username");
+			changeusername.addActionListener(this);
+			New_Username.addActionListener(this);// utilitï¿½ aï¿½ revoir
+			
+			//to disconnect
+			disconnection= new JButton("Disconnect");
+			disconnection.addActionListener(this);
+			
+			//to open a new session 
+			opensession=new JButton("Open session");
+			opensession.addActionListener(this);
+			opensessionLabel=new JLabel("Click the \"Open session\" button"+ " once you have selected user.",JLabel.CENTER);
+			
+			
+			list = new JList<>( vector ); //data has type Object[]
+			list.setModel(model);
+			list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+			list.setVisibleRowCount(-1);
+			JScrollPane listScroller = new JScrollPane(list);
+			listScroller.setPreferredSize(new Dimension(250, 80));
+			
+			
+			
+			//add widget to the different panel
+			changeusernamePanel.add(New_Username,BorderLayout.CENTER);
+			changeusernamePanel.add(changeusername,BorderLayout.SOUTH);
+			
+			deconnectionPanel.add(disconnection,BorderLayout.SOUTH); 
+			
+			opensessionPanel.add(opensessionLabel,BorderLayout.NORTH);
+			opensessionPanel.add(opensession,BorderLayout.SOUTH);
+			opensessionPanel.add(list,BorderLayout.CENTER);
+			
+			//add panel to the 
+			mainPanel.add(changeusernamePanel,BorderLayout.NORTH);
+			mainPanel.add(deconnectionPanel,BorderLayout.SOUTH);
+			mainPanel.add(opensessionPanel,BorderLayout.CENTER);
+			connectedFrame.getContentPane().add(mainPanel, BorderLayout.CENTER);
+			
+			//fait disparaitre la fenÃªtre de connexion
+			mainFrame.setVisible(false);
+			//Affiche la fenÃªtre  principale
+			connectedFrame.pack();
+			connectedFrame.setVisible(true);
+			
+		}
+		else 
+		{
+			nameconflict=false; 
 		}
 	}
 		
@@ -117,15 +185,40 @@ public class IHM implements ActionListener
 		//close open session
 		
 		//return to connection page
+		connectedFrame.setVisible(false);
+		mainFrame.setVisible(true);
 		
 	}
 	
 	
-	public void changeUsername()
-	{
-		//notify the name change
+	public void changeUsername(String newname)
+	{	//check_disponilily
+		notificationCenter.check_disponibility(newname);
+		//attendre une reponse pendant X seconde  
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
+		//no exception rise change of name possible
+		if (!nameconflict) 
+		{	
+		
+		//notify the name change
+		notificationCenter.notify_change_username(currentUsername,newname,currentMac, currentIp);
 		//change it in our list 
+		User us= new User(currentUsername,currentMac,"127.0.0.1");
+		userList.changeUsername(us, newname);
+		currentUsername=newname; 
+		connectedFrame.setTitle(currentUsername);
+		}
+		else 
+		{
+			nameconflict=false; 
+		}
+		
 	}
 	
 	
@@ -143,13 +236,15 @@ public class IHM implements ActionListener
 			String log= login.getText();
 			connection(log);
 		}
-		else if (event.getActionCommand().equals("Deconnexion"))
+		else if (event.getActionCommand().equals("Disconnect"))
 		{
+			
 			deconnection(); 
 		}
 		else if (event.getActionCommand().equals("Change username"))
 		{
-			changeUsername();
+			String name= New_Username.getText();
+			changeUsername(name);
 		}
 		else if (event.getActionCommand().equals("Open session"))
 		{
@@ -198,5 +293,20 @@ public class IHM implements ActionListener
 	            createAndShowGUI();
 	        }
 	    });
+	    
+	    while(true) 
+	    {
+	    	//handle notification
+	    	try { notificationCenter.handle_notification(); }
+			catch ( UsernameException e)
+			{
+				nameconflict=true; 
+			}
+	    	
+	    	
+	    	//update display list 
+	    	
+	    	//test ajouter un element 
+	    }
 	}
 }

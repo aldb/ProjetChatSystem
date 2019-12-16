@@ -11,8 +11,10 @@ public class UserList extends ArrayList<User>
 		boolean exist= false;
 		while (i < this.size() && !exist) {
 			exist= User.compareUsername(this.get(i), user);
+			System.out.print("valeur exist: "+exist); 
 			i++;
 		}
+		System.out.print("Le nom apparrait dans ma liste "+exist); 
 		return exist; 	
 	}
 	
