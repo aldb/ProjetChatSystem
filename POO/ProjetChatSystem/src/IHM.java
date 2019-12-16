@@ -226,7 +226,7 @@ public class IHM implements ActionListener
 	
 	public void openSession(User user)
 	{
-		
+		// create socket
 		
 		
 	}
