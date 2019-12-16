@@ -6,6 +6,8 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
@@ -22,7 +24,7 @@ public class IHM implements ActionListener
 	static String currentIp; //instanciï¿½ lors de la connexion 
 	static String currentMac; //instanciï¿½ lors de la connexion 
 	
-	// Lancelot: à completer
+	// Lancelot: ï¿½ completer
 	static User currentUser;
 	
 	JFrame mainFrame, connectedFrame;
@@ -90,21 +92,39 @@ public class IHM implements ActionListener
 			//notify + update the list
 			try
 	        {
-				currentIp = InetAddress.getLocalHost().toString();
-				InetAddress address = InetAddress.getLocalHost();
-				NetworkInterface ni =  NetworkInterface.getByInetAddress(address);
-	            if (ni != null) 
+				
+				NetworkInterface ni=null;
+				Enumeration<NetworkInterface> i = NetworkInterface.getNetworkInterfaces();
+			    boolean pastrouve=true;
+			    while (i.hasMoreElements() && pastrouve)
+			    {
+			    	NetworkInterface e = i.nextElement();
+			    	if (!e.isLoopback()&& e.isUp())
+			    	{
+			    		pastrouve=false;
+			    		ni=e;
+			    		currentIp = e.getInetAddresses().nextElement().toString();
+			    		
+			    	}
+			    }	
+			    if (ni != null) 
 	            {
 	                byte[] macbyte = ni.getHardwareAddress();
 	             
-	                for (int i = 0; i < macbyte.length; i++)
+	                for (int i1 = 0; i1 < macbyte.length; i1++)
 	                {
-	                	s.append(String.format("%02X%s", macbyte[i]));
+	                	s.append(String.format("%02X%s", macbyte[i1]));
 	                }
 	            } 
+			    else 
+			    {
+			    	throw new UnknownHostException();
+			    }
 	                
 	        }
-	        catch (UnknownHostException | SocketException e) {  } 
+	        catch (UnknownHostException | SocketException e) { 
+	        	// TODO: 
+	        } 
 			currentMac= s.toString();
 			//on s'ajoute a la list des utilisateurs
 			User us= new User(currentUsername,currentMac,"127.0.0.1");
