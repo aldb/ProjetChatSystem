@@ -7,11 +7,11 @@ public class Message
 	private User sender;
 	
 	
-	public Message(String data, User sender)
+	public Message(String data, User sender, Date date)
 	{
 		this.data = data;
 		this.sender = sender;
-		this.date = new Date();
+		this.date = date;
 	}
 
 	public String getData()

@@ -72,7 +72,7 @@ public class IHM implements ActionListener
 	
 	public void connection(String username) 
 	{	
-		StringBuffer s = new StringBuffer();
+		String s = "";
 		
 		//check_disponilily
 		notificationCenter.check_disponibility(username);
@@ -110,11 +110,9 @@ public class IHM implements ActionListener
 			    if (ni != null) 
 	            {
 	                byte[] macbyte = ni.getHardwareAddress();
-	             
-	                for (int i1 = 0; i1 < macbyte.length; i1++)
-	                {
-	                	s.append(String.format("%02X%s", macbyte[i1]));
-	                }
+
+	                s = new String(macbyte);
+
 	            } 
 			    else 
 			    {
@@ -122,10 +120,13 @@ public class IHM implements ActionListener
 			    }
 	                
 	        }
+
 	        catch (UnknownHostException | SocketException e) { 
 	        	// TODO: 
 	        } 
-			currentMac= s.toString();
+			currentMac= s;
+
+	        
 			//on s'ajoute a la list des utilisateurs
 			User us= new User(currentUsername,currentMac,"127.0.0.1");
 			userList.add(us);

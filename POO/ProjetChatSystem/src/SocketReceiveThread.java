@@ -1,7 +1,7 @@
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.Date;
 
 public class SocketReceiveThread extends Thread
 {
@@ -28,13 +28,13 @@ public class SocketReceiveThread extends Thread
 				byte[] b = new byte[4096]; // change length ?
 				int stream = reader.read(b);
 				data = new String(b, 0, stream);
-				history.add(new Message(data, IHM.currentUser));
+				history.add(new Message(data, IHM.currentUser, new Date()));
 			}
 		}
 		catch (IOException e)
 		{
 			// Socket not connected
-			history.add(new Message("La connexion a été interrompu.", new User("System", "System", "System")));
+			history.add(new Message("La connexion a été interrompu.", new User("System", "System", "System"), new Date()));
 			e.printStackTrace();
 		}
 	}
