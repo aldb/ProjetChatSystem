@@ -18,6 +18,27 @@ public class User
 		return u1.getUsername().equals(u2.getUsername());	
 	}
 	
+	@Override
+	public boolean equals(Object o) { 
+		  
+        // If the object is compared with itself then return true   
+        if (o == this) { 
+            return true; 
+        } 
+  
+        /* Check if o is an instance of Complex or not 
+          "null instanceof [type]" also returns false */
+        if (!(o instanceof User)) { 
+            return false; 
+        } 
+          
+        // typecast o to Complex so that we can compare data members  
+        User c = (User) o; 
+          
+        // Compare the data members and return accordingly  
+        return c.getUsername().equals(this.getUsername());
+    } 
+	
 	public String toString() { return this.username;}
 
 	public String getUsername()

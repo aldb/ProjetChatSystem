@@ -10,6 +10,7 @@ import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionListener;
 
 public class IHM implements ActionListener
 {
@@ -28,6 +29,7 @@ public class IHM implements ActionListener
 	JButton connexion, opensession, send, disconnection, changeusername;
 	JList<User> list;
 	Vector<User> vector = new Vector<>(userList);
+	JScrollPane listScroller;
 	static DefaultListModel<User> model=new DefaultListModel<>();
 	
 	public IHM()
@@ -140,11 +142,12 @@ public class IHM implements ActionListener
 			
 			list = new JList<>( vector ); //data has type Object[]
 			list.setModel(model);
-			list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 			list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 			list.setVisibleRowCount(-1);
-			JScrollPane listScroller = new JScrollPane(list);
+			listScroller = new JScrollPane(list);
 			listScroller.setPreferredSize(new Dimension(250, 80));
+			
 			
 			
 			
@@ -222,8 +225,9 @@ public class IHM implements ActionListener
 	}
 	
 	
-	public void openSession()
+	public void openSession(User user)
 	{
+		
 		
 		
 	}
@@ -247,8 +251,9 @@ public class IHM implements ActionListener
 			changeUsername(name);
 		}
 		else if (event.getActionCommand().equals("Open session"))
-		{
-			openSession();
+		{	
+			User u=list.getSelectedValue();
+			openSession(u);
 		}
 		
 	}

@@ -34,7 +34,7 @@ public class SocketReceiveThread extends Thread
 		catch (IOException e)
 		{
 			// Socket not connected
-			//history.add(new Message("La connexion a été interrompu."));
+			//history.add(new Message("La connexion a ï¿½tï¿½ interrompu."));
 			e.printStackTrace();
 		}
 	}
