@@ -1,5 +1,6 @@
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.function.Predicate;
 
 public class NotificationCenter
 {
@@ -20,27 +21,27 @@ public class NotificationCenter
 	// Code des notifications i,c,d,a, r reponse 
 	public void check_disponibility(String username)
 	{
-		udpcom.sendDatagram(("i "+username),5000,this.broadcast );
+		udpcom.sendDatagram(("i "+username),50000,this.broadcast );
 	}
 	
 	public void notify_connexion(String username,String macAddress, String ipAddress)
 	{
-		udpcom.sendDatagram("c "+username+" "+macAddress+" "+ipAddress, 5000,this.broadcast);
+		udpcom.sendDatagram("c "+username+" "+macAddress+" "+ipAddress, 50000,this.broadcast);
 	}
 	
 	public void notify_presence(String username,String macAddress, String ipAddress)
 	{
-		udpcom.sendDatagram("p "+username+" "+macAddress+" "+ipAddress,5000,this.broadcast);
+		udpcom.sendDatagram("p "+username+" "+macAddress+" "+ipAddress,50000,this.broadcast);
 	}
 	
 	public void notify_deconnexion(String username,String macAddress, String ipAddress)
 	{
-		udpcom.sendDatagram("d "+username+" "+macAddress+" "+ipAddress,5000 ,this.broadcast);
+		udpcom.sendDatagram("d "+username+" "+macAddress+" "+ipAddress,50000 ,this.broadcast);
 	}
 	
 	public void notify_change_username(String username,String newusername,String macAddress, String ipAddress)
 	{
-		udpcom.sendDatagram("a "+username+" "+macAddress+" "+ipAddress+" "+newusername, 5000 ,this.broadcast);
+		udpcom.sendDatagram("a "+username+" "+macAddress+" "+ipAddress+" "+newusername, 50000 ,this.broadcast);
 	}
 	
 	
@@ -98,7 +99,6 @@ public class NotificationCenter
 				User user= new User(data[1],data[2],data[3]);
 				//ajouter user a la list
 				userList.add(user); 
-				//IHM.model.addElement(user);
 				
 			}
 			
@@ -108,10 +108,9 @@ public class NotificationCenter
 				String[] data = notification.data.split(" ");
 				User user= new User(data[1],data[2],data[3]);
 				//enlever user à la list 
-				
-				userList.remove(user); 
 
-				IHM.model.addElement(new User("je me deconnecte","",""));
+				Predicate<User> p =i-> i.getUsername()==data[1];  
+				userList.remove(user);
 				IHM.model.removeElement(user);
 			}
 			
@@ -122,14 +121,14 @@ public class NotificationCenter
 				String[] data = notification.data.split(" ");
 				User user= new User(data[1],data[2],data[3]);
 				String newusername= data[4];
-				//modifier user de la liste avec newusername
-				userList.changeUsername(user,newusername);  
+				 
 				//on retire l'ancien user de la liste 
-
-				IHM.model.addElement(new User("je change de nom","",""));
 				IHM.model.removeElement(user);
 				// on ajoute le même avec un nom different 
 				IHM.model.addElement(new User(data[4],data[2],data[3]));
+				
+				//modifier user de la liste avec newusername
+				userList.changeUsername(user,newusername); 
 			}
 		}
 	}
