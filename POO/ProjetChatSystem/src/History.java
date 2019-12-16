@@ -1,32 +1,75 @@
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class History extends ArrayList<Message>
 {
-	public History()
+	private final String saveDirectory = "Histories/";
+	private User receiver;
+	
+	public History(User receiver)
 	{
-		
+		this.receiver = receiver;
 	}
 	
 	
 	public void saveHistory()
 	{
-		// in a txt file
+		String contents = "History File - Current User @MAC " + IHM.currentUser.getMacAddress() + " - Receiver @MAC " + this.receiver.getMacAddress() + "\r\n";
+		for (Message message : this)
+			contents += "[" + message.getSender().getMacAddress() + "]" + message.getData() + "\n";
+        
+		String absoluteFilePath = this.saveDirectory + "history_" + IHM.currentUser.getMacAddress() + "_" + this.receiver.getMacAddress() + "_data.txt";
+		File file = new File(absoluteFilePath);
+        if (file.exists()) file.delete();
+        try
+		{
+			if (file.createNewFile()) System.out.println("File Created: " + absoluteFilePath);  // TODO: display to IHM
+			Files.write(Paths.get(absoluteFilePath), contents.getBytes("UTF-8"));
+		} catch (IOException e)
+		{
+			e.printStackTrace(); // TODO Handle exception : fail
+		}
 	}
 	
 	
 	public void retrieveHistory()
 	{
-		// from a txt file
+		String absoluteFilePath = this.saveDirectory+ "history_" + IHM.currentUser.getMacAddress() + "_" + this.receiver.getMacAddress() + "_data.txt";;
+		try
+		{
+			List<String> contents = Files.readAllLines(Paths.get(absoluteFilePath));
+			contents.remove(0); // first information line
+			for (String line : contents)
+			{
+				String senderMAC = line.split("]")[0].replace("[", "");
+				User sender;
+				if (IHM.currentUser.getMacAddress() == senderMAC)
+					sender = IHM.currentUser;
+				else if (receiver.getMacAddress() == senderMAC)
+					sender = receiver;
+				else sender = new User("System", "System", "System");
+				String data = line.split("]")[1];
+				this.add(new Message(data, sender));
+			}
+		} catch (IOException e)
+		{
+			e.printStackTrace(); // TODO Handle exception : no history found for this session...
+		}
 	}
 	
-	// To display it
+	
+	// To display it on IHM
 	public String getMessagesData()
 	{
 		String messagesData = "";
 		for (Message message : this)
 		{
-			messagesData += " " + message.getSender() + " : " + message.getData() + "\n\n";
+			messagesData += " " + message.getSender().getUsername() + " : " + message.getData() + "\n";
 		}
 		return messagesData;
 	}

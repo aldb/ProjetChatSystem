@@ -21,6 +21,9 @@ public class IHM implements ActionListener
 	static String currentIp; //instanciï¿½ lors de la connexion 
 	static String currentMac; //instanciï¿½ lors de la connexion 
 	
+	// Lancelot: à completer
+	static User currentUser;
+	
 	JFrame mainFrame, connectedFrame;
 	JPanel connexionPanel,opensessionPanel, deconnectionPanel,changeusernamePanel, mainPanel;
 	JTextField login, New_Username;

@@ -7,10 +7,10 @@ public class SocketReceiveThread extends Thread
 {
 	Socket sock;
 	BufferedInputStream reader;
-	ArrayList<Message> history;
+	History history;
 	
 	
-	SocketReceiveThread(Socket sock, ArrayList<Message> history, )
+	SocketReceiveThread(Socket sock, History history)
 	{
 		this.sock = sock;
 		this.history = history;
@@ -28,13 +28,13 @@ public class SocketReceiveThread extends Thread
 				byte[] b = new byte[4096]; // change length ?
 				int stream = reader.read(b);
 				data = new String(b, 0, stream);
-				history.add(new Message(data, ));
+				history.add(new Message(data, IHM.currentUser));
 			}
 		}
 		catch (IOException e)
 		{
 			// Socket not connected
-			//history.add(new Message("La connexion a été interrompu."));
+			history.add(new Message("La connexion a été interrompu.", new User("System", "System", "System")));
 			e.printStackTrace();
 		}
 	}

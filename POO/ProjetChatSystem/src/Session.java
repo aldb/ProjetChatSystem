@@ -13,7 +13,7 @@ public class Session
 	{
 		this.receiver = receiver;
 		this.sock = sock;
-		this.history = new History();
+		this.history = new History(receiver);
 		
 		this.history.retrieveHistory();
 		this.enableReceivingMessages();
