@@ -2,50 +2,68 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketAddress;
 
-public class TcpCommunication
+public class TcpCommunication extends Thread
 {
-	private Socket sock;
-	private static ServerSocket serverSock; // 
+	ServerSocket serverSock;
+	IHM mainIHM;
 	
-	public TcpCommunication()
+	public TcpCommunication(IHM mainIHM)
 	{
 		// Generer num port
-		int port = 5000;
+		this.mainIHM = mainIHM;
+	}
+	
+	public void run()
+	{
 		try
 		{
-			serverSock = new ServerSocket(port, 1000);
+			int port = 5000;
+			this.serverSock = new ServerSocket(port, 1000);
+			while (serverSock.isClosed())
+			{
+				Socket sock = serverSock.accept();
+				if (sock != null) mainIHM.openEnteringSession(sock);
+			}
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace(); // TODO: handle
+		}
+	}
+	
+	
+	public void disableEnteringConnection()
+	{
+		try
+		{
+			serverSock.close();
 		} catch (IOException e)
 		{
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	public Socket newConnection()
+	
+	public void enableEnteringConnection()
 	{
-		Socket sock =
-		null;
+		run();
+	}
+	
+	
+	public Socket getNewConnectionSocket(String addr, int port)
+	{
+		Socket sock = null;
 		try
-		{	
-			// TCP
-			sock = serverSock.accept();
-			//SockThread sockThread = new SockThread(sock);
-			//sockThread.start();		
-			}
-		catch (IOException e)
 		{
+			sock = new Socket(addr, port);
+		} catch (IOException e)
+		{
+			// TODO: handle
 			e.printStackTrace();
 		}
 		return sock;
-	}
-	
-	public void send(String data)
-	{
-		
-	}
-	
-	public String receive()
-	{
-		return "";
 	}
 }

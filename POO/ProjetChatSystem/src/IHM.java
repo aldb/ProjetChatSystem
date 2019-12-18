@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import javax.swing.event.ListSelectionListener;
 
 public class IHM implements ActionListener
 {
-	ArrayList<Session> sessions  = new ArrayList<Session>();
+	ArrayList<SessionPage> sessions  = new ArrayList<SessionPage>();
 	static UserList userList = new UserList();
 	static NotificationCenter notificationCenter= new NotificationCenter(userList);
 	static boolean nameconflict=false; 
@@ -26,6 +27,7 @@ public class IHM implements ActionListener
 	
 	// Lancelot: � completer
 	static User currentUser;
+	TcpCommunication tcpCo = new TcpCommunication(this);
 	
 	JFrame mainFrame, connectedFrame;
 	JPanel connexionPanel,opensessionPanel, deconnectionPanel,changeusernamePanel, mainPanel;
@@ -63,10 +65,6 @@ public class IHM implements ActionListener
 		//Display the window.
 		mainFrame.pack();
 		mainFrame.setVisible(true);
-		
-		
-		
-		
 	}	
 	
 	
@@ -249,11 +247,24 @@ public class IHM implements ActionListener
 	}
 	
 	
-	public void openSession(User user)
+	public void openSelectedSession(User user)
 	{
-		// create socket
+		Socket sock = tcpCo.getNewConnectionSocket(user.getIpAddress(), (int) (Math.random() * 10000));
+		if (sock != null)
+		{
+			sessions.add(new SessionPage(new Session(user, sock)));
+		}
 		
 		
+	}
+	
+	public void openEnteringSession(Socket sock)
+	{
+		User nUser = userList.getUserByIP(sock.getInetAddress().getHostAddress());
+		if (sock != null)
+		{
+			sessions.add(new SessionPage(new Session(nUser, sock)));
+		}
 	}
 	
 	
@@ -277,7 +288,7 @@ public class IHM implements ActionListener
 		else if (event.getActionCommand().equals("Open session"))
 		{	
 			User u=list.getSelectedValue();
-			openSession(u);
+			openSelectedSession(u);
 		}
 		
 	}

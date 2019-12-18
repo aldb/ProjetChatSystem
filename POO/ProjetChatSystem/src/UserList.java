@@ -36,4 +36,14 @@ public class UserList extends ArrayList<User>
 			user.setUsername(newusername);
 			this.add(user);
 	}
+	
+	
+	public User getUserByIP(String ip)
+	{
+		for(User u : this)
+		{
+			if (u.getIpAddress() == ip) return u;
+		}
+		return null;
+	}
 }
