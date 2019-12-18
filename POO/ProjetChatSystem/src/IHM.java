@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -14,15 +16,15 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 
-public class IHM implements ActionListener
+public class IHM implements ActionListener, WindowListener
 {
 	ArrayList<Session> sessions  = new ArrayList<Session>();
 	static UserList userList = new UserList();
 	static NotificationCenter notificationCenter= new NotificationCenter(userList);
 	static boolean nameconflict=false; 
-	static String currentUsername; //instanci� lors de la connexion 
-	static String currentIp; //instanci� lors de la connexion 
-	static String currentMac; //instanci� lors de la connexion 
+	static String currentUsername=null; //instanci� lors de la connexion 
+	static String currentIp=null; //instanci� lors de la connexion 
+	static String currentMac=null; //instanci� lors de la connexion 
 	
 	// Lancelot: � completer
 	static User currentUser;
@@ -41,6 +43,7 @@ public class IHM implements ActionListener
 	{
 		// Create and set up the main window
 		mainFrame = new JFrame("Chat Application");
+		
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setSize(new Dimension(4000, 4000));
 		
@@ -63,6 +66,7 @@ public class IHM implements ActionListener
 		//Display the window.
 		mainFrame.pack();
 		mainFrame.setVisible(true);
+		
 		
 		
 		
@@ -191,6 +195,8 @@ public class IHM implements ActionListener
 			mainPanel.add(opensessionPanel,BorderLayout.CENTER);
 			connectedFrame.getContentPane().add(mainPanel, BorderLayout.CENTER);
 			
+			connectedFrame.addWindowListener(this);
+			
 			//fait disparaitre la fenêtre de connexion
 			mainFrame.setVisible(false);
 			//Affiche la fenêtre  principale
@@ -201,6 +207,8 @@ public class IHM implements ActionListener
 		else 
 		{
 			nameconflict=false; 
+			//afficher un message d'erreur 
+			
 		}
 	}
 		
@@ -211,8 +219,15 @@ public class IHM implements ActionListener
 		notificationCenter.notify_deconnexion(currentUsername,currentMac,currentIp);
 		//close open session
 		
+		//remet la liste des utilisateur à zéro 
+		userList.clear(); 
+		//remet le model a zero
+		
+		model.clear();
+		
 		//return to connection page
 		connectedFrame.setVisible(false);
+		//connectedFrame.dispose();
 		mainFrame.setVisible(true);
 		
 	}
@@ -329,6 +344,14 @@ public class IHM implements ActionListener
 	    	try { notificationCenter.handle_notification(); }
 			catch ( UsernameException e)
 			{
+				JFrame error= new JFrame("Erreur");
+				JLabel label = new JLabel("Ce nom d'utilisateur est déja pris");
+				error.getContentPane().add(label);
+				error.pack();
+				error.setSize(300, 100);
+				error.setVisible(true);
+				
+				
 				nameconflict=true; 
 			}
 	    	
@@ -337,5 +360,56 @@ public class IHM implements ActionListener
 	    	
 	    	//test ajouter un element 
 	    }
+	}
+
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println("Je me deco");
+		deconnection(); 
+		
+	}
+
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

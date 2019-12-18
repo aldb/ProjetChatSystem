@@ -82,7 +82,7 @@ public class NotificationCenter
 			{
 				String[] data = notification.data.split(" ");
 				User user= new User(data[1],data[2],data[3]);
-				//ajouter user a la list
+				//ajouter user a la list  
 				userList.add(user); 
 				IHM.model.addElement(user);
 				//on notify notre connexion à cette personne
@@ -97,8 +97,16 @@ public class NotificationCenter
 			{
 				String[] data = notification.data.split(" ");
 				User user= new User(data[1],data[2],data[3]);
-				//ajouter user a la list
-				userList.add(user); 
+				
+				//ajouter user a la list (on le retire s'il existe déja ) si il n'est pas null
+				if (! (data[1].equals("null")))
+				{
+					System.out.println(data[1]);
+					IHM.model.removeElement(user);
+					userList.remove(user);
+					userList.add(user); 
+					IHM.model.addElement(user);
+				}
 				
 			}
 			
