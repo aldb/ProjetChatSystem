@@ -9,72 +9,89 @@ import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("serial")
-public class History extends ArrayList<Message>
+class History extends ArrayList<Message>
 {
-	private final String saveDirectory = "Histories/";
+	private final String saveDirectory = "C:/Users/pouli/Documents/INSA/4IR/ProjetChatSystem/POO/ProjetChatSystem/Histories/";
+    private User currentUser;
 	private User receiver;
-	
-	public History(User receiver)
+
+
+	History(User currentUser, User receiver)
 	{
+	    super();
+	    this.currentUser = currentUser;
 		this.receiver = receiver;
 	}
 	
 	
-	public void saveHistory()
+	boolean saveHistory()
 	{
-		String contents = "History File - Current User @MAC " + IHM.currentUser.getMacAddress() + " - Receiver @MAC " + this.receiver.getMacAddress() + "\r\n";
+        receiver.setIsActiveSession(false);
+	    boolean succeed = false;
+		String contents = "History File - Current User @MAC " + currentUser.getMacAddress() + " - Receiver @MAC " + this.receiver.getMacAddress() + "\r\n";
 		for (Message message : this)
-			contents += "[" + String.format("dd-MMM-yyyy HH:mm:ss", message.getDate()) + "][" + message.getSender().getMacAddress() + "]" + message.getData() + "\n";
+			contents += "[" + (new SimpleDateFormat("dd/MM HH:mm")).format(message.getDate()) + "][" + message.getSender().getMacAddress() + "]" + message.getData() + "\n";
         
-		String absoluteFilePath = this.saveDirectory + "history_" + IHM.currentUser.getMacAddress() + "_" + this.receiver.getMacAddress() + "_data.txt";
+		String absoluteFilePath = this.saveDirectory + "history_" + this.receiver.getMacAddress() + "_data.txt";
 		File file = new File(absoluteFilePath);
         if (file.exists()) file.delete();
         try
 		{
-			if (file.createNewFile()) System.out.println("File Created: " + absoluteFilePath);  // TODO: display to IHM
+			file.createNewFile();
 			Files.write(Paths.get(absoluteFilePath), contents.getBytes("UTF-8"));
+			succeed = true;
 		} catch (IOException e)
 		{
-			e.printStackTrace(); // TODO Handle exception : fail
+			// Handle by return value
 		}
+		return succeed;
 	}
+
 	
-	
-	public void retrieveHistory()
+	boolean retrieveHistory()
 	{
-		String absoluteFilePath = this.saveDirectory+ "history_" + IHM.currentUser.getMacAddress() + "_" + this.receiver.getMacAddress() + "_data.txt";;
+	    receiver.setIsActiveSession(true);
+        boolean succeed = false;
+		String absoluteFilePath = this.saveDirectory + "history_" + this.receiver.getMacAddress() + "_data.txt";
 		try
 		{
 			List<String> contents = Files.readAllLines(Paths.get(absoluteFilePath));
 			contents.remove(0); // first information line
 			for (String line : contents)
 			{
-				Date date = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").parse(line.split("]")[0].replace("[", ""));
+				Date date = new SimpleDateFormat("dd/MM HH:mm").parse(line.split("]")[0].replace("[", ""));
 				String senderMAC = line.split("]")[1].replace("[", "");
-				User sender;
-				if (IHM.currentUser.getMacAddress() == senderMAC)
-					sender = IHM.currentUser;
-				else if (receiver.getMacAddress() == senderMAC)
-					sender = receiver;
-				else sender = new User("System", "System", "System");
 				String data = line.split("]")[2];
-				this.add(new Message(data, sender, date));
+				if (receiver.getMacAddress().equals(senderMAC))
+					this.addReceivedMessage(data, date);
+				else this.addSentMessage(data, date);
 			}
+            succeed = true;
 		} catch (IOException | ParseException e)
 		{
-			e.printStackTrace(); // TODO Handle exception : no history found for this session...
+		    // Handle by return value
 		}
+        return succeed;
 	}
+
+
+	void addSentMessage(String data, Date date)
+    {
+        this.add(new Message(data, currentUser, date));
+    }
+
+
+    void addReceivedMessage(String data, Date date)
+    {
+        this.add(new Message(data, receiver, date));
+    }
 	
-	
-	// To display it on IHM
-	public String getMessagesData()
+
+	String getMessagesData()
 	{
 		String messagesData = "";
 		for (Message message : this)
-		{
-			messagesData += "[" + String.format("dd-MMM-yyyy HH:mm:ss", message.getDate()) + "] " + message.getSender().getUsername() + " : " + message.getData() + "\n";
-		}
+			messagesData += "[" + (new SimpleDateFormat("dd/MM HH:mm")).format(message.getDate()) + "] " + message.getSender().getUsername() + " : " + message.getData() + "\n";
 		return messagesData;
 	}
 }

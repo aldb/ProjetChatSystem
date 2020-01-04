@@ -1,63 +1,99 @@
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Date;
 
-public class Session
+
+class Session extends AbstractModel implements Runnable
 {
 	private History history;
-	private User receiver;
 	private Socket sock;
+	private PrintWriter writer;
 	
 	
-	public Session(User receiver, Socket sock)
-	{
-		this.receiver = receiver;
-		this.sock = sock;
-		this.history = new History(receiver);
-		
-		this.history.retrieveHistory();
-		this.enableReceivingMessages();
-	}
-	
-	
-	public void sendMessage(String data)
-	{
-		try
-		{
-			PrintWriter writer = new PrintWriter(sock.getOutputStream());
-			writer.write(data);
-			writer.flush();
-			writer.close();
-			//history.add(new Message(data, IHM.currentUser));
-		} catch (IOException e)
-		{
-			//history.add(new Message("Impossible d'envoyer le message : Connexion interrompu."), );
-			e.printStackTrace();
-		}
-	}
-	
-	private void enableReceivingMessages()
-	{
-		SocketReceiveThread sockReceiveThread = new SocketReceiveThread(this.sock, this.history);
-		sockReceiveThread.start();
-	}
-	
-	
-	public void closeSession() throws IOException
-	{
-		this.sock.close();
-		this.history.saveHistory();
-	}
-	
+	Session(User currentUser, User receiver, Socket sock)
+    {
+        this.sock = sock;
+        this.history = new History(currentUser, receiver);
+    }
 
-	// Display on IHM
-	public History getHistory()
+
+    void start()
+    {
+        if (!this.history.retrieveHistory())
+            ((SessionView) this.view).refreshChatTextArea("Aucun historique trouve ou erreur a la recuperation");
+        else
+            ((SessionView)this.view).refreshChatTextArea(history.getMessagesData());
+
+        try
+        {
+            writer = new PrintWriter(sock.getOutputStream());
+        } catch (IOException e)
+        {
+            this.view.showErrorDialog("Erreur lors de la creation du writer du socket TCP de la session : " + e.getMessage());
+        }
+
+        new Thread(this).start();
+    }
+
+
+    void sendMessage(String data)
+    {
+        writer.write("\0" + data);
+        writer.flush();
+        if (!data.equals("/close"))
+        {
+            history.addSentMessage(data, new Date());
+            ((SessionView)this.view).refreshSendMessageTextField();
+            ((SessionView)this.view).refreshChatTextArea(history.getMessagesData());
+        }
+    }
+	
+	
+	void closeSession()
 	{
-		return this.history;
+        try
+        {
+            this.sock.close();
+        } catch (IOException e)
+        {
+            this.view.showErrorDialog("Erreur lors de la fermeture du socket TCP de la session : " + e.getMessage());
+        }
+        if(!this.history.saveHistory())
+            this.view.showErrorDialog("Erreur lors de la sauvegarde de l'historique");
+        this.view.setVisible(false);
+        this.view.dispose(); // Destroy the JFrame object
 	}
 
-	public User getReceiver()
-	{
-		return this.receiver;
-	}
+
+    @Override
+    public void run()
+    {
+        try
+        {
+            BufferedInputStream reader = new BufferedInputStream(sock.getInputStream());
+            while(reader.read() != -1)
+            {
+                byte[] b = new byte[4096];
+                int stream = reader.read(b);
+                String data = new String(b, 0, stream);
+                if (data.equals("/close"))
+                {
+                    this.view.showInformationDialog("Session ferme par l'utilisateur distant");
+                    this.closeSession();
+                }
+                else
+                {
+                    history.addReceivedMessage(data, new Date());
+                    ((SessionView)this.view).refreshChatTextArea(history.getMessagesData());
+                }
+            }
+        }
+        catch (IOException e)
+        {
+            if (!e.getMessage().equals("Socket closed"))
+                this.view.showErrorDialog("Erreur lors de la lecture du socket TCP de la session : " + e.getMessage());
+        }
+    }
 }

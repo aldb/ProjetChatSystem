@@ -1,83 +1,72 @@
+import java.net.InetAddress;
 
 public class User
 {
 	private String username;
-	private boolean isActive;
 	private String macAddress;
-	private String ipAddress;
-	
-	public User(String username, String macAdd, String ipAdd)
-	{
-		this.username= username;
-		this.macAddress= macAdd;
-		this.ipAddress= ipAdd; 
-	}
-	
-	public static boolean compareUsername (User u1, User u2) 
-	{
-		return u1.getUsername().equals(u2.getUsername());	
-	}
-	
-	@Override
-	public boolean equals(Object o) { 
-		  
-        // If the object is compared with itself then return true   
-        if (o == this) { 
-            return true; 
-        } 
-  
-        /* Check if o is an instance of Complex or not 
-          "null instanceof [type]" also returns false */
-        if (!(o instanceof User)) { 
-            return false; 
-        } 
-          
-        // typecast o to Complex so that we can compare data members  
-        User c = (User) o; 
-          
-        // Compare the data members and return accordingly  
-        return c.getUsername().equals(this.getUsername());
-    } 
-	
-	public String toString() { return this.username;}
+	private InetAddress ipAddress;
+	private boolean isCentralized;
+    private boolean isActiveSession;
 
-	public String getUsername()
+
+	User(String username, String macAddress, InetAddress ipAddress, boolean isCentralized)
 	{
-		return username;
+		this.username = username;
+		this.macAddress = macAddress;
+		this.ipAddress = ipAddress;
+		this.isCentralized = isCentralized;
+		this.isActiveSession = false;
 	}
+
+
+	@Override
+    public boolean equals(Object obj)
+    {
+        boolean isEqual = false;
+        User user = (User)obj;
+        if ((this.getUsername() != null && this.getUsername().equals(user.getUsername()))
+                || (this.getMacAddress() != null && this.getMacAddress().equals(user.getMacAddress()))
+                || (this.getIpAddress() != null && this.getIpAddress().equals(user.getIpAddress()) && !isCentralized)
+            )
+        {
+            isEqual = true;
+        }
+        return isEqual;
+    }
+
+
+	public String getUsername() { return this.username; }
 
 	public void setUsername(String username)
 	{
 		this.username = username;
 	}
 
-	public boolean isActive()
-	{
-		return isActive;
-	}
-
-	public void setActive(boolean isActive)
-	{
-		this.isActive = isActive;
-	}
-
-	public String getMacAddress()
-	{
-		return macAddress;
-	}
+	public String getMacAddress() { return this.macAddress; }
 
 	public void setMacAddress(String macAddress)
 	{
 		this.macAddress = macAddress;
 	}
 
-	public String getIpAddress()
-	{
-		return ipAddress;
-	}
+	public InetAddress getIpAddress() { return this.ipAddress; }
 
-	public void setIpAddress(String ipAddress)
+	public void setIpAddress(InetAddress ipAddress)
 	{
 		this.ipAddress = ipAddress;
 	}
+
+    public boolean getIsCentralized() { return this.isCentralized; }
+
+    public void setIsCentralized(boolean isCentralized)
+    {
+        this.isCentralized = isCentralized;
+    }
+
+    public boolean getIsActiveSession() { return this.isActiveSession; }
+
+    public void setIsActiveSession(boolean isActiveSession)
+    {
+        this.isActiveSession = isActiveSession;
+    }
 }

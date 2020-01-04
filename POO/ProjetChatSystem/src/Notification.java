@@ -1,25 +1,25 @@
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 
 public class Notification
 {
-	String data;
-	int port ;
-	InetAddress add;
-	Date date;
+	private String data;
+	private InetAddress ipAddress;
+	private Date date;
 	
 	
-	public Notification(String data, int port, InetAddress add )
-	{	
-		this.port= port;
-		this.add=  add; 
-		this.data = data;
-		this.date = new Date();
-	}
-	
-	
-	public Notification()
+	Notification(String data, InetAddress ipAddress, Date date)
 	{
-		this.data = "";
-	} 
+		this.ipAddress = ipAddress;
+		this.data = data;
+		this.date = date;
+	}
+
+
+    public String getData() { return data; }
+
+    public InetAddress getIpAddress() { return ipAddress; }
+
+    public Date getDate() { return date; }
 }
