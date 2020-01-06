@@ -84,15 +84,25 @@ class UserManager extends AbstractModel
                         sb.append(String.format("%02X%s", macbyte[i], (i < macbyte.length - 1) ? "-" : ""));
                     }
                     this.currentUser.setMacAddress(sb.toString()); // MAC
-                    InetAddress addr = e.getInetAddresses().nextElement();
-                    this.currentUser.setIpAddress(addr); // IP
                     for (InterfaceAddress interfaceAddress : e.getInterfaceAddresses())
                     {
                         InetAddress broadcast = interfaceAddress.getBroadcast();
                         if (broadcast != null)
                         {
                             this.decentralizedCenter.setBroadcastAddress(broadcast); // Broadcast IP
-                            found = true;
+                            Enumeration<InetAddress> addrs = e.getInetAddresses();
+                            InetAddress addr = null;
+                            boolean isAddrOk = false;
+                            while (addrs.hasMoreElements() && !isAddrOk)
+                            {
+                                addr = addrs.nextElement();
+                                if (!addr.isLinkLocalAddress())
+                                {
+                                    isAddrOk = true;
+                                    found = true;
+                                }
+                            }
+                            this.currentUser.setIpAddress(addr); // IP
                         }
                     }
                 }

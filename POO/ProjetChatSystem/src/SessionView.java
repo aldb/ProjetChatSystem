@@ -16,11 +16,11 @@ class SessionView extends AbstractView
 	{
 	    super(sessionController, "Discussion avec " + remoteUsername);
         chatTextArea = new JTextArea();
-		javax.swing.SwingUtilities.invokeLater(() -> createAndShowGUI());
+		javax.swing.SwingUtilities.invokeLater(() -> initializeComponent());
 	}
 
 	
-	private void createAndShowGUI()
+	private void initializeComponent()
 	{
 	    // Create and set up the main window
         JPanel mainPanel = new JPanel();

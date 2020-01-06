@@ -32,7 +32,7 @@ public class SessionManager extends AbstractModel implements Runnable
 		}
 		catch (IOException e)
 		{
-            if (!e.getMessage().equals("socket closed"))
+            if (!e.getMessage().equals("socket closed") && !e.getMessage().equals("Socket closed"))
                 this.view.showErrorDialog("Erreur lors de l'execution du socket serveur session TCP : " + e.getMessage());
 		}
 	}

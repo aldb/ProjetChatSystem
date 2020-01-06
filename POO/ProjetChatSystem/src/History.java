@@ -11,7 +11,8 @@ import java.util.List;
 @SuppressWarnings("serial")
 class History extends ArrayList<Message>
 {
-	private final String saveDirectory = "C:/Users/pouli/Documents/INSA/4IR/ProjetChatSystem/POO/ProjetChatSystem/Histories/";
+   // private final String saveDirectory = "home/aldebert/Histories/";
+	private final String saveDirectory = "./Histories/"; // TODO: regler probleme hsitory relatif linux
     private User currentUser;
 	private User receiver;
 
