@@ -3,6 +3,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
+
 import javax.swing.*;
 
 
@@ -11,6 +13,7 @@ class SessionView extends AbstractView
     private JButton sendMessageButton;
     private JTextField sendMessageTextField;
     private JTextArea chatTextArea;
+    private JButton FileChoiceButton; 
 
     SessionView(SessionController sessionController, String remoteUsername)
 	{
@@ -35,6 +38,9 @@ class SessionView extends AbstractView
 
         sendMessageButton = new JButton("Send");
         sendMessageButton.addActionListener(new SendMessageButtonListener());
+        
+        FileChoiceButton = new JButton("File");
+        FileChoiceButton.addActionListener(new FileChoiceButtonListener());
 
         chatTextArea.setEditable(false);
         chatTextArea.setFont(new Font("Serif", Font.PLAIN, 15));
@@ -55,6 +61,7 @@ class SessionView extends AbstractView
 
         southPanel.add(sendMessageTextField, left);
         southPanel.add(sendMessageButton, right);
+        southPanel.add(FileChoiceButton, right);
         mainPanel.add(new JScrollPane(chatTextArea), BorderLayout.CENTER);
         mainPanel.add(BorderLayout.SOUTH, southPanel);
 
@@ -111,7 +118,17 @@ class SessionView extends AbstractView
     {
         public void actionPerformed(ActionEvent e)
         {
+        
             ((SessionController)controller).sendMessage(sendMessageTextField.getText());
+        }
+    }
+    
+    private class FileChoiceButtonListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+        
+            ((SessionController)controller).sendFile();
         }
     }
 }
