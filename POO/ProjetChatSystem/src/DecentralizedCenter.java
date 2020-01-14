@@ -67,7 +67,7 @@ public class DecentralizedCenter extends AbstractModel implements Runnable
             Notification notification = this.receiveNotification();
 
             // TODO: ATTENTION A COMMENTER POUR TEST LOCAL (permet de ne pas recevoir nos propres notifications (a cause du broadcast)
-            if(notification != null && this.usernameStatus != UsernameStatus.ALREADY_TAKEN_OR_NOT_ASSIGNED )//&& !notification.getIpAddress().getHostAddress().equals(currentUser.getIpAddress().getHostAddress()))
+            if(notification != null && this.usernameStatus != UsernameStatus.ALREADY_TAKEN_OR_NOT_ASSIGNED) // && !notification.getIpAddress().getHostAddress().equals(currentUser.getIpAddress().getHostAddress()))
             {
                 String[] data = notification.getData().split(" ");
                 User sender = new User(data[1], data[2], notification.getIpAddress(), false);
@@ -90,7 +90,7 @@ public class DecentralizedCenter extends AbstractModel implements Runnable
                 else if (notification.getData().charAt(0)=='c')
                 {
                     // regarde si un utilisateur utilisant le username apparait dans la liste
-                    if (false) // TODO: for local test: false, or must be :(userListModel.find(sender) != null || sender.equals(currentUser)) instead
+                    if (false) // (userListModel.find(sender) != null || sender.equals(currentUser))) // TODO: for local test: false, or must be precedent line instead
                     {
                         this.notify_response_connexion(sender, 'f');
                     }

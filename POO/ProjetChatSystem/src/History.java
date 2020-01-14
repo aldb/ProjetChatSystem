@@ -11,9 +11,8 @@ import java.util.List;
 @SuppressWarnings("serial")
 class History extends ArrayList<Message>
 {
-	
-    private String saveDirectory = null;
-	//private final String saveDirectory = "./Histories/"; // TODO: regler probleme hsitory relatif linux
+   // private final String saveDirectory = "home/aldebert/Histories/";
+	private final String saveDirectory = "./Histories/";
     private User currentUser;
 	private User receiver;
 
@@ -21,11 +20,12 @@ class History extends ArrayList<Message>
 	History(User currentUser, User receiver)
 	{
 	    super();
-	    try {
+	    try
+        {
 			this.saveDirectory= new File(".").getCanonicalPath()+"/Histories/";
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (IOException e)
+        {
+	        e.printStackTrace();
 		}
 	    System.out.println(this.saveDirectory);
 	    this.currentUser = currentUser;
