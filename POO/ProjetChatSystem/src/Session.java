@@ -1,4 +1,5 @@
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -47,20 +48,22 @@ class Session extends AbstractModel implements Runnable
     {
         writer.write("\0" + data);
         writer.flush();
-        if (!data.equals("/close") && !data.equals("/file") )
+        if (!data.equals("/close748159263") && !data.contains("/file748159263") )
         {
             history.addSentMessage(data, new Date());
             ((SessionView)this.view).refreshSendMessageTextField();
             ((SessionView)this.view).refreshChatTextArea(history.getMessagesData());
         }
     }
-    
+    String content; 
     void sendFile(String path)
     {
     	byte[] data=null;
     	boolean ok= true;
 		try {
 			data = Files.readAllBytes(new File(path).toPath());
+			content =  new String(data,"UTF-8");
+			System.out.println(content); 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -68,8 +71,16 @@ class Session extends AbstractModel implements Runnable
 		} 
 		if (ok)
         {
-        writer.write("\0" + data.toString());
-        writer.flush();
+			
+			writer.write("\0");
+			writer.flush();
+		try {
+			sock.getOutputStream().write(data);
+			sock.getOutputStream().flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         
             history.addSentMessage(path, new Date());
             ((SessionView)this.view).refreshChatTextArea(history.getMessagesData());
@@ -97,37 +108,55 @@ class Session extends AbstractModel implements Runnable
     public void run()
     {
     	String fichier= null; 
+    	int size=0; 
         try
         {
             BufferedInputStream reader = new BufferedInputStream(sock.getInputStream());
             while(reader.read() != -1)
             {
-                byte[] b = new byte[4096];
-                int stream = reader.read(b);
-                String data = new String(b, 0, stream);
-                if (data.equals("/close"))
+            	byte[] b ;
+            	int stream;
+            	String data; 
+            	
+                if (fichier != null) {
+                	b = new byte[size];
+                	stream = reader.read(b);
+                	data = new String(b, 0, stream);
+                }
+                else {
+                	b = new byte[1024];
+                	stream = reader.read(b);
+                	data = new String(b, 0, stream);
+                }
+                
+                if (data.equals("/close748159263"))
                 {
                     this.view.showInformationDialog("Session ferme par l'utilisateur distant");
                     this.closeSession();
                 }
-                else if (data.contains("/file"))
+                else if (data.contains("/file748159263"))
                 {
                 	fichier= data.split("/")[2];
+                	size= Integer.valueOf(data.split("/")[3]);
                 }
                 else if (fichier != null)
                 {
-                	String path="/home/aldebert/files/"+ fichier;
-                    File file = new File(path);//to do mettre ./file 
+                	String path="/home/aldebert/files/"+ fichier; //to do mettre ./file
+                    File file = new File(path); 
                     if (file.exists()) file.delete();
                     try
             		{
             			file.createNewFile();
             			Files.write(Paths.get(path),b);
+            			 System.out.println(data); 
             		} catch (IOException e)
             		{
             			// Handle by return value
             		}
                     fichier=null;
+                    
+                    history.addReceivedMessage(path, new Date());
+                    ((SessionView)this.view).refreshChatTextArea(history.getMessagesData());
                 	
                 }
                 else

@@ -121,7 +121,8 @@ public class DecentralizedCenter extends AbstractModel implements Runnable
                 {
                     User user = this.userListModel.find(sender);
                     if (user != null)
-                    {
+                    {   
+                        this.view.showInformationDialog(user.getUsername()+" est maintenat "+sender.getUsername());
                         user.setUsername(sender.getUsername());
                         ((MainView)view).refreshUserList();
                     } else
