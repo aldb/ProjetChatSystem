@@ -60,7 +60,7 @@ class SessionView extends AbstractView
 
         this.addWindowListener(new SessionViewListener());
         this.add(mainPanel);
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.setSize(470, 300);
         this.setVisible(true);
 	}
@@ -85,13 +85,10 @@ class SessionView extends AbstractView
         public void windowOpened(WindowEvent e) { }
 
         @Override
-        public void windowClosing(WindowEvent e) { }
+        public void windowClosing(WindowEvent e) { ((SessionController)controller).closeSession(); }
 
         @Override
-        public void windowClosed(WindowEvent e)
-        {
-            ((SessionController)controller).closeSession();
-        }
+        public void windowClosed(WindowEvent e) { }
 
         @Override
         public void windowIconified(WindowEvent e) { }

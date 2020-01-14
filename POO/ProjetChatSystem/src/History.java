@@ -12,7 +12,7 @@ import java.util.List;
 class History extends ArrayList<Message>
 {
    // private final String saveDirectory = "home/aldebert/Histories/";
-	private final String saveDirectory = "./Histories/"; // TODO: regler probleme hsitory relatif linux
+	private final String saveDirectory = "./Histories/"; // TODO: regler probleme history relatif linux
     private User currentUser;
 	private User receiver;
 

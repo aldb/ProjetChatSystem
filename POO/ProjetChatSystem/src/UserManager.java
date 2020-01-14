@@ -75,7 +75,7 @@ class UserManager extends AbstractModel
             while (ni.hasMoreElements() && !found)
             {
                 NetworkInterface e = ni.nextElement();
-                if (!e.isLoopback() && e.isUp()) // TODO: conditionner parfaitement
+                if (!e.isLoopback() && e.isUp())
                 {
                     byte[] macbyte = e.getHardwareAddress();
                     StringBuilder sb = new StringBuilder();
