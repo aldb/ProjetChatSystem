@@ -123,7 +123,7 @@ public class DecentralizedCenter extends AbstractModel implements Runnable
                     if (user != null)
                     {
                         user.setUsername(sender.getUsername());
-                        ((MainView)view).refreshUserList();
+                        ((MainView)view).refreshUserList(); // TODO: maybe update it in a possible active session
                     } else
                     {
                         this.view.showErrorDialog("Erreur lors de la reception d'une notification de changement de nom d'utilisateur");
