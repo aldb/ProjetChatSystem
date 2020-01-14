@@ -25,7 +25,8 @@ class SessionController extends AbstractController
     	choice.setFileSelectionMode(JFileChooser.FILES_ONLY);
     	int retour=choice.showOpenDialog(null);
     	if(retour==JFileChooser.APPROVE_OPTION){
-    		session.sendMessage("/file/"+choice.getSelectedFile().getName());
+    	   session.sendMessage("/file748159263/"+choice.getSelectedFile().getName()+"/"+choice.getSelectedFile().length());
+    	   System.out.println(choice.getSelectedFile().length());
     	   session.sendFile( choice.getSelectedFile().getAbsolutePath());
     	}
     	
@@ -35,7 +36,7 @@ class SessionController extends AbstractController
 
     void closeSession()
     {
-        session.sendMessage("/close");
+        session.sendMessage("/close748159263");
         session.closeSession();
     }
 }
