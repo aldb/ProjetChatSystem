@@ -12,7 +12,7 @@ import java.util.List;
 class History extends ArrayList<Message>
 {
    // private final String saveDirectory = "home/aldebert/Histories/";
-	private final String saveDirectory = "./Histories/"; // TODO: regler probleme history relatif linux
+	private final String saveDirectory = "./Histories/";
     private User currentUser;
 	private User receiver;
 
@@ -20,6 +20,14 @@ class History extends ArrayList<Message>
 	History(User currentUser, User receiver)
 	{
 	    super();
+	    try
+        {
+			this.saveDirectory= new File(".").getCanonicalPath()+"/Histories/";
+		} catch (IOException e)
+        {
+	        e.printStackTrace();
+		}
+	    System.out.println(this.saveDirectory);
 	    this.currentUser = currentUser;
 		this.receiver = receiver;
 	}
