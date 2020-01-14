@@ -20,7 +20,7 @@ class SessionController extends AbstractController
     
     void sendFile()
     {
-    	
+        // TODO: check length of file, max 100Ko ?
     	JFileChooser choice = new JFileChooser();
     	choice.setFileSelectionMode(JFileChooser.FILES_ONLY);
     	int retour=choice.showOpenDialog(null);
