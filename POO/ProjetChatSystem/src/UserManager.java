@@ -10,15 +10,18 @@ class UserManager extends AbstractModel
     private String log; // TODO: implement log
     private User currentUser;
     private UserListModel userListModel;
-    private DecentralizedCenter decentralizedCenter;
+    private DecentralizedNotifier decentralizedNotifier;
+    private CentralizedNotifier centralizedNotifier;
 
 
     UserManager()
     {
-        this.currentUser = new User(null, null, null, false);
+        this.currentUser = new User(null, null, null);
         this.userListModel = new UserListModel();
-        this.decentralizedCenter = new DecentralizedCenter(currentUser, userListModel);
-        this.decentralizedCenter.setView(this.view);
+        this.decentralizedNotifier = new DecentralizedNotifier(currentUser, userListModel);
+        this.decentralizedNotifier.setView(this.view);
+        this.centralizedNotifier = new CentralizedNotifier(currentUser, userListModel);
+        this.centralizedNotifier.setView(this.view);
     }
 
 
@@ -27,9 +30,10 @@ class UserManager extends AbstractModel
         if (this.retrieveLocalMacAndIpAddress()) // si le reseau est valide
         {
             // on notifie la connexion en checkant la disponibilite du username et les reponses nous servirons a construire notre liste des utilisateurs actifs
-            this.decentralizedCenter.notify_connexion();
+            this.decentralizedNotifier.notifyConnection();
+            this.centralizedNotifier.notifyConnection();
             // attente d'une reponse
-            for (int time = 0; this.decentralizedCenter.getUsernameStatus() == DecentralizedCenter.UsernameStatus.PENDING && time < 1000; time += 50)
+            for (int time = 0; this.decentralizedNotifier.getUsernameStatus() == DecentralizedNotifier.UsernameStatus.PENDING && this.centralizedNotifier.getUsernameStatus() != CentralizedNotifier.UsernameStatus.AVAILABLE && time < 1000; time += 50)
             {
                 try
                 {
@@ -41,11 +45,11 @@ class UserManager extends AbstractModel
                 }
             }
 
-            if (this.decentralizedCenter.getUsernameStatus() == DecentralizedCenter.UsernameStatus.ALREADY_TAKEN_OR_NOT_ASSIGNED) // username non disponible
+            if (this.decentralizedNotifier.getUsernameStatus() == DecentralizedNotifier.UsernameStatus.ALREADY_TAKEN_OR_NOT_ASSIGNED || this.centralizedNotifier.getUsernameStatus() == CentralizedNotifier.UsernameStatus.ALREADY_TAKEN_OR_NOT_ASSIGNED) // username non disponible
             {
                 this.view.showErrorDialog("Ce nom d'utilisateur n'est pas disponible.");
             }
-            else // NONE ou AVAILABLE --> username non utilise donc connexion ok
+            else // PENDING ou AVAILABLE --> username non utilise donc connexion ok
             {
                 // Affiche la fenetre principale et fait disparaitre la fenetre de connexion
                 SessionManager sessionManager = new SessionManager(this);
@@ -55,7 +59,8 @@ class UserManager extends AbstractModel
                 this.view.dispose(); // Destroy the JFrame object
                 sessionManager.setView(mainView);
                 this.setView(mainView);
-                decentralizedCenter.setView(mainView);
+                decentralizedNotifier.setView(mainView);
+                centralizedNotifier.setView(mainView);
                 mainView.setUserListModel(this.userListModel);
             }
         }
@@ -89,7 +94,7 @@ class UserManager extends AbstractModel
                         InetAddress broadcast = interfaceAddress.getBroadcast();
                         if (broadcast != null)
                         {
-                            this.decentralizedCenter.setBroadcastAddress(broadcast); // Broadcast IP
+                            this.decentralizedNotifier.setBroadcastAddress(broadcast); // Broadcast IP
                             Enumeration<InetAddress> addrs = e.getInetAddresses();
                             InetAddress addr = null;
                             boolean isAddrOk = false;
@@ -117,14 +122,16 @@ class UserManager extends AbstractModel
 
     void abortConnection()
     {
-        decentralizedCenter.notify_deconnexion();
+        decentralizedNotifier.notifyDisconnection();
+        centralizedNotifier.notifyDisconnection();
         userListModel.clear();
         this.view.setVisible(false);
         this.view.dispose(); // Destroy the JFrame object
         LogInController logInController = new LogInController(this);
         LogInView logInView = new LogInView(logInController);
         this.setView(logInView);
-        decentralizedCenter.setView(logInView);
+        decentralizedNotifier.setView(logInView);
+        centralizedNotifier.setView(logInView);
     }
 
 
@@ -133,7 +140,7 @@ class UserManager extends AbstractModel
         if (!currentUser.getUsername().equals(newName)) // Si on se nomme deja comme ca
         {
             //check avaibility of new Username --> check in the list
-            if (userListModel.find(new User(newName, null, null, false)) != null)
+            if (userListModel.find(new User(newName, null, null)) != null)
             {
                 this.view.showErrorDialog("Ce nom d'utilisateur est deja pris");
             } else
@@ -141,7 +148,7 @@ class UserManager extends AbstractModel
                 currentUser.setUsername(newName);
                 this.view.setTitle(newName);
                 // notify the name change
-                decentralizedCenter.notify_change_username();
+                decentralizedNotifier.notifyChangeUsername();
             }
         }
     }

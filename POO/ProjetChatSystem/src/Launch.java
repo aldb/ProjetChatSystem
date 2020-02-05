@@ -1,12 +1,14 @@
 import javax.swing.*;
 
-public class Launch
+class Launch
 {
-    public static int portA, portB; // for local test
+    static int portA, portB; // for local test
+
+
     public static void main(String[] args)
     {
-        portA = Integer.parseInt(args[0]);
-        portB = Integer.parseInt(args[1]);
+        portA = 5000;
+        portB = 5000;
 
         initLookAndFeel();
 

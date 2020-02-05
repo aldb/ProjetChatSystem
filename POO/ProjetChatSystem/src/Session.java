@@ -45,7 +45,7 @@ class Session extends AbstractModel implements Runnable
     {
         writer.write("\0" + data);
         writer.flush();
-        if (!data.equals("/close748159263") && !data.contains("/file748159263") )
+        if (!data.equals("/close748159263") && !data.contains("/file") )
         {
             history.addSentMessage(data, new Date());
             ((SessionView)this.view).refreshSendMessageTextField();
@@ -67,8 +67,8 @@ class Session extends AbstractModel implements Runnable
             ((SessionView)this.view).refreshChatTextArea(history.getMessagesData());
 		} catch (IOException e)
         {
-			// TODO: handle
-		}
+            this.view.showErrorDialog("Erreur lors de l'envoi du fichier : " + e.getMessage());
+        }
     }
 	
 	
@@ -110,12 +110,12 @@ class Session extends AbstractModel implements Runnable
                 int stream = reader.read(b);
                 String data = new String(b, 0, stream);
                 
-                if (data.equals("/close748159263"))
+                if (data.equals("/close"))
                 {
                     this.view.showInformationDialog("Session ferme par l'utilisateur distant");
                     this.closeSession();
                 }
-                else if (data.contains("/file748159263"))
+                else if (data.contains("/file"))
                 {
                 	fichier = data.split("/")[2];
                 	size = Integer.valueOf(data.split("/")[3]);

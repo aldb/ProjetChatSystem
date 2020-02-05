@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class UserListCellRenderer extends DefaultListCellRenderer
+class UserListCellRenderer extends DefaultListCellRenderer
 {
     UserListCellRenderer()
     {

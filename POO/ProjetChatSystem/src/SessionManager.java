@@ -3,7 +3,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class SessionManager extends AbstractModel implements Runnable
+class SessionManager extends AbstractModel implements Runnable
 {
 	private ServerSocket serverSock;
     private ArrayList<Session> sessions;
@@ -26,7 +26,7 @@ public class SessionManager extends AbstractModel implements Runnable
 			while (!serverSock.isClosed())
 			{
 				Socket sock = serverSock.accept();
-				User remoteUser = userManager.findUser(new User(null, null, sock.getInetAddress(), false));
+				User remoteUser = userManager.findUser(new User(null, null, sock.getInetAddress()));
 				openSession(remoteUser, sock);
 			}
 		}

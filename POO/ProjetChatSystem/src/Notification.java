@@ -1,8 +1,7 @@
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Date;
 
-public class Notification
+class Notification
 {
 	private String data;
 	private InetAddress ipAddress;
@@ -17,9 +16,9 @@ public class Notification
 	}
 
 
-    public String getData() { return data; }
+    String getData() { return data; }
 
-    public InetAddress getIpAddress() { return ipAddress; }
+    InetAddress getIpAddress() { return ipAddress; }
 
     public Date getDate() { return date; }
 }

@@ -3,8 +3,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.File;
-
 import javax.swing.*;
 
 
@@ -30,7 +28,7 @@ class SessionView extends AbstractView
         mainPanel.setLayout(new BorderLayout());
 
         JPanel southPanel = new JPanel();
-        southPanel.setBackground(Color.BLUE);
+        southPanel.setBackground(Color.GRAY);
         southPanel.setLayout(new GridBagLayout());
 
         sendMessageTextField = new JTextField(30);

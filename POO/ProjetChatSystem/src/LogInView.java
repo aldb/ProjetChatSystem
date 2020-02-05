@@ -6,7 +6,7 @@ import javax.swing.*;
 
 class LogInView extends AbstractView
 {
-	private JPanel connectionPanel;
+	private JPanel panel;
 	private JTextField loginTextField;
 	private JLabel connectionLabel;
 	private JButton connectionButton;
@@ -21,22 +21,31 @@ class LogInView extends AbstractView
 
     private void initializeComponent()
     {
-        // create and set up the connexion panel
-        connectionPanel = new JPanel(new GridLayout(2, 2));
-        // create widget
-        loginTextField = new JTextField(15);
-        connectionLabel = new JLabel("Entrer nom d'utilisateur");
-        connectionButton = new JButton("Connexion");
-        connectionButton.addActionListener(new ConnexionButtonListener());
-        // add widget
-        connectionPanel.add(connectionButton);
-        connectionPanel.add(loginTextField);
-        connectionPanel.add(connectionLabel);
-        // Add the panel to the window and display it
-        this.getContentPane().add(connectionPanel, BorderLayout.CENTER);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(new Dimension(400, 400));
-        this.pack();
+        this.setSize(new Dimension(300, 175));
+        this.setResizable(false);
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) ((dimension.getWidth() - this.getWidth()) / 2);
+        int y = (int) ((dimension.getHeight() - this.getHeight()) / 2);
+        this.setLocation(x, y);
+
+        panel = new JPanel();
+        this.add(panel);
+        panel.setLayout(null);
+
+        connectionLabel = new JLabel("Pseudo");
+        connectionLabel.setBounds(55, 30, 50, 25);
+        panel.add(connectionLabel);
+
+        loginTextField = new JTextField();
+        loginTextField.setBounds(105, 30, 130, 25);
+        panel.add(loginTextField);
+
+        connectionButton = new JButton("Connexion");
+        connectionButton.setBounds(55, 60, 180, 45);
+        panel.add(connectionButton);
+        connectionButton.addActionListener(new ConnexionButtonListener());
+
         this.setVisible(true);
     }
 

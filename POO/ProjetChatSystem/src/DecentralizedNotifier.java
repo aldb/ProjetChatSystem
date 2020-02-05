@@ -2,7 +2,7 @@ import java.io.IOException;
 import java.net.*;
 import java.util.Date;
 
-public class DecentralizedCenter extends AbstractModel implements Runnable
+class DecentralizedNotifier extends AbstractModel implements Runnable
 {
     private User currentUser;
     private UserListModel userListModel;
@@ -13,7 +13,7 @@ public class DecentralizedCenter extends AbstractModel implements Runnable
     private InetAddress broadcastAddress;
 
 
-	DecentralizedCenter(User currentUser, UserListModel userListModel)
+	DecentralizedNotifier(User currentUser, UserListModel userListModel)
 	{
 	    this.currentUser = currentUser;
 	    this.userListModel = userListModel;
@@ -37,24 +37,24 @@ public class DecentralizedCenter extends AbstractModel implements Runnable
     //     entraine la connexion de la personne et l'ajout a la liste de chaque machine si positive
     // d = deconnexion
     // a = changement username (valide par soi meme puisque userListModel valide a tout moment)
-	void notify_connexion()
+	void notifyConnection()
 	{
 	    this.usernameStatus = UsernameStatus.PENDING; // on laisse entrer les notifications
 		this.sendNotification(new Notification("c "+currentUser.getUsername()+" "+currentUser.getMacAddress(), this.broadcastAddress, new Date()));
 	}
 	
-	void notify_deconnexion()
+	void notifyDisconnection()
 	{
         this.sendNotification(new Notification("d "+currentUser.getUsername()+" "+currentUser.getMacAddress(), this.broadcastAddress, new Date()));
         this.usernameStatus = UsernameStatus.ALREADY_TAKEN_OR_NOT_ASSIGNED;  // on ne laisse plus entrer les notifications
 	}
 	
-	void notify_change_username()
+	void notifyChangeUsername()
 	{
         this.sendNotification(new Notification("a "+currentUser.getUsername()+" "+currentUser.getMacAddress(), this.broadcastAddress, new Date()));
 	}
 
-    private void notify_response_connexion (User destUser, char response) // on notifie le user de la reponse et on dit qui on est au cas ou c'est positif
+    private void notifyResponseConnection (User destUser, char response) // on notifie le user de la reponse et on dit qui on est au cas ou c'est positif
     {
         this.sendNotification(new Notification("r"+response+" "+currentUser.getUsername()+" "+currentUser.getMacAddress(), destUser.getIpAddress(), new Date()));
     }
@@ -66,11 +66,11 @@ public class DecentralizedCenter extends AbstractModel implements Runnable
         {
             Notification notification = this.receiveNotification();
 
-            // TODO: ATTENTION A COMMENTER POUR TEST LOCAL (permet de ne pas recevoir nos propres notifications (a cause du broadcast)
-            if(notification != null && this.usernameStatus != UsernameStatus.ALREADY_TAKEN_OR_NOT_ASSIGNED) // && !notification.getIpAddress().getHostAddress().equals(currentUser.getIpAddress().getHostAddress()))
+            // TODO: COMMENTER POUR TEST LOCAL (permet de ne pas recevoir nos propres notifications (a cause du broadcast)
+            if(notification != null && this.usernameStatus != UsernameStatus.ALREADY_TAKEN_OR_NOT_ASSIGNED && !notification.getIpAddress().getHostAddress().equals(currentUser.getIpAddress().getHostAddress()))
             {
                 String[] data = notification.getData().split(" ");
-                User sender = new User(data[1], data[2], notification.getIpAddress(), false);
+                User sender = new User(data[1], data[2], notification.getIpAddress());
 
                 // reponse : il nous suffit d'une seule reponse positive ou negative pour conclure car chacun est a jour
                 if (notification.getData().charAt(0) == 'r')
@@ -90,15 +90,16 @@ public class DecentralizedCenter extends AbstractModel implements Runnable
                 else if (notification.getData().charAt(0)=='c')
                 {
                     // regarde si un utilisateur utilisant le username apparait dans la liste
-                    if (false) // (userListModel.find(sender) != null || sender.equals(currentUser))) // TODO: for local test: false, or must be precedent line instead
+                    // TODO: COMMENTER POUR TEST LOCAL: false
+                    if (userListModel.find(sender) != null || sender.equals(currentUser))
                     {
-                        this.notify_response_connexion(sender, 'f');
+                        this.notifyResponseConnection(sender, 'f');
                     }
                     else
                     {
                         // on sait qu'il sera connecté puisqu'on vérifie dans la liste
                         // on envoie une reponse qui inclus le fait qu'on est présent aussi
-                        this.notify_response_connexion(sender, 't');
+                        this.notifyResponseConnection(sender, 't');
                         this.userListModel.addElement(sender);
                     }
                 }
@@ -122,9 +123,9 @@ public class DecentralizedCenter extends AbstractModel implements Runnable
                     User user = this.userListModel.find(sender);
                     if (user != null)
                     {   
-                        this.view.showInformationDialog(user.getUsername()+" est maintenat "+sender.getUsername());
+                        this.view.showInformationDialog(user.getUsername() + " est maintenant " + sender.getUsername());
                         user.setUsername(sender.getUsername());
-                        ((MainView)view).refreshUserList(); // TODO: maybe update it in a possible active session
+                        ((MainView)view).refreshUserList();
                     } else
                     {
                         this.view.showErrorDialog("Erreur lors de la reception d'une notification de changement de nom d'utilisateur");

@@ -17,7 +17,8 @@ class SessionController extends AbstractController
         // TODO: filtrer taille de message et caractere '[ ' ']' /close ...
         session.sendMessage(message);
     }
-    
+
+
     void sendFile()
     {
         // TODO: check length of file, max 100Ko ?
@@ -25,7 +26,7 @@ class SessionController extends AbstractController
     	choice.setFileSelectionMode(JFileChooser.FILES_ONLY);
     	int retour=choice.showOpenDialog(null);
     	if(retour==JFileChooser.APPROVE_OPTION){
-    	   session.sendMessage("/file748159263/"+choice.getSelectedFile().getName()+"/"+choice.getSelectedFile().length());
+    	   session.sendMessage("/file/"+choice.getSelectedFile().getName()+"/"+choice.getSelectedFile().length());
     	   System.out.println(choice.getSelectedFile().length());
     	   session.sendFile( choice.getSelectedFile().getAbsolutePath());
     	}
@@ -36,7 +37,7 @@ class SessionController extends AbstractController
 
     void closeSession()
     {
-        session.sendMessage("/close748159263");
+        session.sendMessage("/close");
         session.closeSession();
     }
 }

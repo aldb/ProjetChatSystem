@@ -1,14 +1,14 @@
 import javax.swing.*;
 
 @SuppressWarnings("serial")
-public class UserListModel extends DefaultListModel<User>
+class UserListModel extends DefaultListModel<User>
 {
 	UserListModel()
     {
         super();
     }
 
-	public User find(User userToFind)
+	User find(User userToFind)
 	{
 		User user = null;
         for (int i = 0; i < this.size(); i++)
@@ -23,7 +23,7 @@ public class UserListModel extends DefaultListModel<User>
 	}
 
 
-    public boolean remove(User userToRemove)
+    boolean remove(User userToRemove)
     {
         boolean succeed = false;
         User user = this.find(userToRemove);

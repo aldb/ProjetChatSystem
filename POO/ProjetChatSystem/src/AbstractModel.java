@@ -9,7 +9,7 @@ abstract class AbstractModel
     }
 
 
-    public void setView(AbstractView view)
+    void setView(AbstractView view)
     {
         this.view = view;
     }

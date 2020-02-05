@@ -1,30 +1,30 @@
 import java.util.Date;
 
-public class Message
+class Message
 {
 	private String data;
 	private Date date;
 	private User sender;
 	
 	
-	public Message(String data, User sender, Date date)
+	Message(String data, User sender, Date date)
 	{
 		this.data = data;
 		this.sender = sender;
 		this.date = date;
 	}
 
-	public String getData()
+	String getData()
 	{
 		return this.data;
 	}
 
-	public Date getDate()
+	Date getDate()
 	{
 		return this.date;
 	}
 	
-	public User getSender()
+	User getSender()
 	{
 		return this.sender;
 	}

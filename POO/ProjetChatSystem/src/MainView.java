@@ -8,9 +8,8 @@ import java.awt.event.WindowListener;
 
 class MainView extends AbstractView
 {
-    private JPanel openSessionPanel, disconnectionPanel, changeUsernamePanel, mainPanel;
+    private JPanel panel;
     private JTextField newUsernameTextField;
-    private JLabel openSessionLabel;
     private JButton openSessionButton, disconnectionButton, changeUsernameButton;
     private JList<User> userList;
     private JScrollPane listScroller;
@@ -26,52 +25,51 @@ class MainView extends AbstractView
 
     private void initializeComponent()
     {
-        // create and set up the different panel
-        openSessionPanel = new JPanel(new GridLayout(3, 1));
-        disconnectionPanel = new JPanel(new GridLayout(1, 2));
-        changeUsernamePanel = new JPanel(new GridLayout(1, 2));
-        mainPanel = new JPanel(new GridLayout(4, 1));
+        this.addWindowListener(new MainViewListener());
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.setSize(new Dimension(300, 175));
+        this.setResizable(false);
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) ((dimension.getWidth() - this.getWidth()) / 2);
+        int y = (int) ((dimension.getHeight() - this.getHeight()) / 2);
+        this.setLocation(x, y);
+
+        panel = new JPanel();
+        this.add(panel);
+        panel.setLayout(null);
 
         // for change username
-        newUsernameTextField = new JTextField(15);
-        changeUsernameButton = new JButton("Changer nom d'utilisateur");
+        newUsernameTextField = new JTextField();
+        newUsernameTextField.setBounds(5, 47, 130, 25);
+        panel.add(newUsernameTextField);
+
+        changeUsernameButton = new JButton("Changer le pseudo");
+        changeUsernameButton.setBounds(5, 74, 130, 25);
+        panel.add(changeUsernameButton);
         changeUsernameButton.addActionListener(new ChangeUsernameButtonListener());
 
         // to disconnect
         disconnectionButton = new JButton("Deconnexion");
+        disconnectionButton.setBounds(5, 110, 130, 25);
+        panel.add(disconnectionButton);
         disconnectionButton.addActionListener(new DisconnectionButtonListener());
 
         // to open a new session
         openSessionButton = new JButton("Ouvrir la session");
+        openSessionButton.setBounds(5, 5, 130, 25);
+        panel.add(openSessionButton);
         openSessionButton.addActionListener(new OpenSessionButtonListener());
-        openSessionLabel = new JLabel("Click the \"Open session\" button" + " once you have selected user.", JLabel.CENTER);
 
         // show user list
         userList.setCellRenderer(new UserListCellRenderer());
-        userList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        userList.setLayoutOrientation(JList.VERTICAL_WRAP);
+        userList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        userList.setLayoutOrientation(JList.VERTICAL);
         userList.setVisibleRowCount(-1);
         listScroller = new JScrollPane(userList);
-        listScroller.setPreferredSize(new Dimension(400, 200));
+        listScroller.setPreferredSize(new Dimension(138, 130));
+        listScroller.setBounds(142, 5, 138, 130);
+        panel.add(listScroller);
 
-        //add widget to the different panel
-        changeUsernamePanel.add(newUsernameTextField, BorderLayout.CENTER);
-        changeUsernamePanel.add(changeUsernameButton, BorderLayout.SOUTH);
-        disconnectionPanel.add(disconnectionButton, BorderLayout.SOUTH);
-        openSessionPanel.add(openSessionLabel, BorderLayout.NORTH);
-        openSessionPanel.add(openSessionButton, BorderLayout.SOUTH);
-        openSessionPanel.add(userList, BorderLayout.CENTER);
-
-        mainPanel.add(changeUsernamePanel, BorderLayout.NORTH);
-        mainPanel.add(disconnectionPanel, BorderLayout.SOUTH);
-        mainPanel.add(openSessionPanel, BorderLayout.CENTER);
-
-        // Affiche la fenetre  principale
-        this.getContentPane().add(mainPanel, BorderLayout.CENTER);
-        this.addWindowListener(new MainViewListener());
-        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        this.setSize(new Dimension(400, 400));
-        this.pack();
         this.setVisible(true);
     }
 
